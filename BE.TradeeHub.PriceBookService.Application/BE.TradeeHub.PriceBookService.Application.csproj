@@ -13,4 +13,31 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="GraphQL\DataLoader\" />
+      <Folder Include="GraphQL\Mutations\" />
+      <Folder Include="GraphQL\Queries\" />
+      <Folder Include="GraphQL\QueryResolvers\" />
+      <Folder Include="GraphQL\Types\" />
+      <Folder Include="Interfaces\" />
+      <Folder Include="Mappings\" />
+      <Folder Include="Requests\" />
+      <Folder Include="Responses\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AWSSDK.Core" Version="3.7.302.12" />
+      <PackageReference Include="HotChocolate.AspNetCore" Version="13.8.1" />
+      <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.8.1" />
+      <PackageReference Include="HotChocolate.Data.MongoDb" Version="13.8.1" />
+      <PackageReference Include="HotChocolate.Types.Filters" Version="13.8.1" />
+      <PackageReference Include="HotChocolate.Types.Sorting" Version="13.8.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BE.TradeeHub.PriceBookService.Domain\BE.TradeeHub.PriceBookService.Domain.csproj" />
+      <ProjectReference Include="..\BE.TradeeHub.PriceBookService.Infrastructure\BE.TradeeHub.PriceBookService.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BE.TradeeHub.PriceBookService.Application", "BE.TradeeHub.PriceBookService.Application\BE.TradeeHub.PriceBookService.Application.csproj", "{149D8EC7-D5D3-4EA1-8243-BAF57140545E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BE.TradeeHub.PriceBookService.Domain", "BE.TradeeHub.PriceBookService.Domain\BE.TradeeHub.PriceBookService.Domain.csproj", "{02F44490-162C-4FDC-9230-C2DE711138DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BE.TradeeHub.PriceBookService.Infrastructure", "BE.TradeeHub.PriceBookService.Infrastructure\BE.TradeeHub.PriceBookService.Infrastructure.csproj", "{C1DE1495-5C9E-45F1-A96F-A1F6E29B3E93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{149D8EC7-D5D3-4EA1-8243-BAF57140545E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{149D8EC7-D5D3-4EA1-8243-BAF57140545E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{149D8EC7-D5D3-4EA1-8243-BAF57140545E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02F44490-162C-4FDC-9230-C2DE711138DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02F44490-162C-4FDC-9230-C2DE711138DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02F44490-162C-4FDC-9230-C2DE711138DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02F44490-162C-4FDC-9230-C2DE711138DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1DE1495-5C9E-45F1-A96F-A1F6E29B3E93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1DE1495-5C9E-45F1-A96F-A1F6E29B3E93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1DE1495-5C9E-45F1-A96F-A1F6E29B3E93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1DE1495-5C9E-45F1-A96F-A1F6E29B3E93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
