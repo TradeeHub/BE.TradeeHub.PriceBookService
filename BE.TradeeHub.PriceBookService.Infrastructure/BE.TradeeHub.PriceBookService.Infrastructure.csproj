@@ -14,4 +14,8 @@
       <ProjectReference Include="..\BE.TradeeHub.PriceBookService.Domain\BE.TradeeHub.PriceBookService.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Repositories\" />
+    </ItemGroup>
+
 </Project>

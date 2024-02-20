@@ -1,4 +1,5 @@
-﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -21,13 +22,15 @@ public class MongoDbContext
         // CreateIndexes();
     }
     
-    public IMongoClient Client => _client; // Expose the MongoClient for external use
-    // public IMongoCollection<CustomerEntity> Customers => _database.GetCollection<CustomerEntity>("Customers");
-    // public IMongoCollection<CustomerReferenceNumberEntity> CustomerReferenceNumber => _database.GetCollection<CustomerReferenceNumberEntity>("Crns");
-    // public IMongoCollection<PropertyEntity> Properties => _database.GetCollection<PropertyEntity>("Properties");
-    // public IMongoCollection<CommentEntity> Comments => _database.GetCollection<CommentEntity>("Comments");
-    // public IMongoCollection<ExternalReferenceEntity> ExternalReferences => _database.GetCollection<ExternalReferenceEntity>("ExternalReferences");
-    
+    public IMongoClient Client => _client;
+    public IMongoCollection<LaborRateEntity> LabourRates => _database.GetCollection<LaborRateEntity>("LabourRates");
+    public IMongoCollection<ServiceCategoryEntity> ServiceCategories => _database.GetCollection<ServiceCategoryEntity>("ServiceCategories");
+    public IMongoCollection<ServiceEntity> Services => _database.GetCollection<ServiceEntity>("Services");
+    public IMongoCollection<MaterialEntity> Materials => _database.GetCollection<MaterialEntity>("Materials");
+    public IMongoCollection<ServiceBundleEntity> ServiceBundles => _database.GetCollection<ServiceBundleEntity>("ServiceBundles");
+    public IMongoCollection<WarrantyEntity> Warranties => _database.GetCollection<WarrantyEntity>("Warranties");
+    public IMongoCollection<TaxRateEntity> TaxRates => _database.GetCollection<TaxRateEntity>("TaxRates");
+
     private void CreateIndexes()
     {
         // var customersCollection = _database.GetCollection<CustomerEntity>("Customers");
