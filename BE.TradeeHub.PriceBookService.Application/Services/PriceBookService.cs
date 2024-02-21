@@ -46,20 +46,20 @@ public class PriceBookService : IPriceBookService
             Images = new List<string>()
         };
 
-        if (request.Images != null && request.Images.Count > 0)
-        {
-            foreach (var imageFile in request.Images)
-            {
-                await using var fileStream = imageFile.OpenReadStream();
-                var fileExtension = Path.GetExtension(imageFile.FileName); // Extract the extension
-
-                var s3ImageKey = await UploadImageAsync(fileStream, userContext.UserId, fileExtension, ctx);
-
-                newServiceCategory.ImagesS3Keys?.Add(s3ImageKey);
-                newServiceCategory.Images?.Add($"{_appSettings.CloudFrontUrl}{s3ImageKey}");
-
-            }
-        }
+        // if (request.Images != null && request.Images.Count > 0)
+        // {
+        //     foreach (var imageFile in request.Images)
+        //     {
+        //         await using var fileStream = imageFile.OpenReadStream();
+        //         var fileExtension = Path.GetExtension(imageFile.FileName); // Extract the extension
+        //
+        //         var s3ImageKey = await UploadImageAsync(fileStream, userContext.UserId, fileExtension, ctx);
+        //
+        //         newServiceCategory.ImagesS3Keys?.Add(s3ImageKey);
+        //         newServiceCategory.Images?.Add($"{_appSettings.CloudFrontUrl}{s3ImageKey}");
+        //
+        //     }
+        // }
 
         await _serviceCategoryCollection.InsertOneAsync(newServiceCategory, null, ctx);
         return newServiceCategory;

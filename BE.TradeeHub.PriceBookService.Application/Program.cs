@@ -3,6 +3,7 @@ using Amazon.S3;
 using BE.TradeeHub.PriceBookService.Application;
 using BE.TradeeHub.PriceBookService.Application.GraphQL.Mutations;
 using BE.TradeeHub.PriceBookService.Application.GraphQL.Queries;
+using BE.TradeeHub.PriceBookService.Application.GraphQL.Types;
 using BE.TradeeHub.PriceBookService.Application.Interfaces;
 using BE.TradeeHub.PriceBookService.Application.Services;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
@@ -12,6 +13,7 @@ using HotChocolate.Execution;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
+using LaborRateType = BE.TradeeHub.PriceBookService.Domain.Enums.LaborRateType;
 
 internal class Program
 {
@@ -58,10 +60,11 @@ internal class Program
             // and manually create and register the AmazonS3Client
             var awsOptions = builder.Configuration.GetAWSOptions();
             awsOptions.Credentials = new BasicAWSCredentials(
-                appSettings.AwsAccessKeyId, 
+                appSettings.AwsAccessKeyId,
                 appSettings.AwsSecretAccessKey
             );
-            builder.Services.AddSingleton<IAmazonS3>(sp => new AmazonS3Client(awsOptions.Credentials, appSettings.AWSRegion)
+            builder.Services.AddSingleton<IAmazonS3>(
+                sp => new AmazonS3Client(awsOptions.Credentials, appSettings.AWSRegion)
             );
         }
 
@@ -121,12 +124,12 @@ internal class Program
             .AddTypeConverter<string, ObjectId>(o => ObjectId.Parse(o))
             .AddQueryType<Query>()
             .AddMutationType<Mutation>()
-            // .AddType<CustomerType>()
-            // .AddType<PropertyType>()
-            // .AddType<CommentType>()
-            // .AddType<UserType>()
-            // .AddType<ReferenceInfoType>()
-            // .AddType<ExternalReferenceType>()
+            .AddType<LaborRateType>()
+            .AddType<MaterialType>()
+            .AddType<ServiceCategoryType>()
+            .AddType<ServiceType>()
+            .AddType<TaxRateType>()
+            .AddType<WarrantyType>()
             .AddMongoDbSorting()
             .AddMongoDbProjections()
             .AddMongoDbPagingProviders()
@@ -138,13 +141,22 @@ internal class Program
         {
             var resolver = app.Services.GetService<IRequestExecutorResolver>();
             var executor = resolver?.GetRequestExecutorAsync().Result;
-            if (executor != null)
+            const string schemaFile = "schema.graphql";
+
+            if (File.Exists(schemaFile))
             {
-                const string schemaFile = "schema.graphql";
-                var newSchema = executor.Schema.ToString();
                 var oldSchema = File.ReadAllText(schemaFile);
+                var newSchema = executor.Schema.ToString();
                 if (newSchema != oldSchema)
+                {
                     File.WriteAllText(schemaFile, newSchema);
+                }
+            }
+            else
+            {
+                // If the file does not exist, write the new schema directly
+                var newSchema = executor.Schema.ToString();
+                File.WriteAllText(schemaFile, newSchema);
             }
         }
 
