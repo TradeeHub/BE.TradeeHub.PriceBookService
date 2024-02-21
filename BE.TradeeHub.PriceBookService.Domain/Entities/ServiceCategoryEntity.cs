@@ -20,11 +20,13 @@ public class ServiceCategoryEntity : AuditableEntity
     /// The description of the service category
     /// </summary>
     public string? Description { get; set; }
+    
+    public List<string>? ImagesS3Keys { get; set; }
 
     /// <summary>
     /// Multiple Images of the service category
     /// </summary>
-    public List<string>? ImageUrl { get; set; }
+    public List<string>? Images { get; set; }
 
     /// <summary>
     /// Service categories that are sub-categories of this service category

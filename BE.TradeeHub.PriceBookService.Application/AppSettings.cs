@@ -7,7 +7,11 @@ public class AppSettings : IAppSettings
 {
     public string Environment { get; set; }
     public string AppClientId { get; set; }
+    public string S3BucketName { get; set; }
+    public string CloudFrontUrl { get; set; }
     public string UserPoolId { get; set; }
+    public string? AwsAccessKeyId { get; set; }
+    public string? AwsSecretAccessKey { get; set; }
     public RegionEndpoint AWSRegion { get; set; }
     public string MongoDbConnectionString { get; set; }
     public string MongoDbDatabaseName { get; set; }
@@ -17,6 +21,10 @@ public class AppSettings : IAppSettings
     public AppSettings(IConfiguration config)
     {
         Environment = config["ASPNETCORE_ENVIRONMENT"];
+        AwsAccessKeyId = config["AWS_ACCESS_KEY_ID"];
+        AwsSecretAccessKey = config["AWS_SECRET_ACCESS_KEY"];
+        S3BucketName = config.GetSection("AppSettings:AWS:S3BucketName").Value;
+        CloudFrontUrl = config.GetSection("AppSettings:AWS:S3BucketName").Value;
         AllowedDomains = config.GetSection("AppSettings:AllowedOrigins").Get<string[]>();
         MongoDbConnectionString = config.GetSection("AppSettings:MongoDB:ConnectionString").Value;
         MongoDbDatabaseName = config.GetSection("AppSettings:MongoDB:DatabaseName").Value;

@@ -8,14 +8,13 @@
 
     <ItemGroup>
       <Folder Include="Extensions\" />
-      <Folder Include="Interfaces\Repositories\" />
       <Folder Include="Results\" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="HotChocolate" Version="13.8.1" />
+      <PackageReference Include="HotChocolate" Version="13.9.0" />
       <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
-      <PackageReference Include="MongoDB.Driver.Core" Version="2.19.1" />
+      <PackageReference Include="MongoDB.Driver.Core" Version="2.23.1" />
     </ItemGroup>
 
 </Project>
