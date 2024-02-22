@@ -1,9 +1,6 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using BE.TradeeHub.PriceBookService.Application.Interfaces;
+﻿using BE.TradeeHub.PriceBookService.Application.Interfaces;
 using BE.TradeeHub.PriceBookService.Application.Requests;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
-using HotChocolate.Resolvers;
 
 namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Mutations;
 

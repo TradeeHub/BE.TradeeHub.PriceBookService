@@ -1,18 +1,10 @@
 ﻿using Amazon.S3;
-using Amazon.S3.Transfer;
 using BE.TradeeHub.PriceBookService.Application.Interfaces;
 using BE.TradeeHub.PriceBookService.Application.Requests;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using Amazon.S3.Model;
-using Microsoft.AspNetCore.Http;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
 using Path = System.IO.Path;
 
 namespace BE.TradeeHub.PriceBookService.Application.Services;
@@ -21,16 +13,13 @@ public class PriceBookService : IPriceBookService
 {
     private readonly IAmazonS3 _s3Client;
     private readonly IAppSettings _appSettings;
-    private readonly IMongoCollection<ServiceCategoryEntity> _serviceCategoryCollection;
+    private readonly IPriceBookRepository _priceBookRepository;
 
-    public PriceBookService(IAmazonS3 s3Client, IAppSettings appSettings)
+    public PriceBookService(IAmazonS3 s3Client, IAppSettings appSettings, IPriceBookRepository priceBookRepository)
     {
         _s3Client = s3Client;
         _appSettings = appSettings;
-        
-        var client = new MongoClient(appSettings.MongoDbConnectionString);
-        var database = client.GetDatabase(appSettings.MongoDbDatabaseName);
-        _serviceCategoryCollection = database.GetCollection<ServiceCategoryEntity>("ServiceCategories");
+        _priceBookRepository = priceBookRepository;
     }
 
     public async Task<ServiceCategoryEntity> AddNewServiceCategoryAsync(UserContext userContext,
@@ -43,42 +32,44 @@ public class PriceBookService : IPriceBookService
             Description = request.Description,
             CreatedAt = DateTime.UtcNow,
             CreatedBy = userContext.UserId,
-            Images = new List<string>()
+            Images = new List<string>(),
+            ImagesS3Keys = new List<string>()
         };
 
-        // if (request.Images != null && request.Images.Count > 0)
-        // {
-        //     foreach (var imageFile in request.Images)
-        //     {
-        //         await using var fileStream = imageFile.OpenReadStream();
-        //         var fileExtension = Path.GetExtension(imageFile.FileName); // Extract the extension
-        //
-        //         var s3ImageKey = await UploadImageAsync(fileStream, userContext.UserId, fileExtension, ctx);
-        //
-        //         newServiceCategory.ImagesS3Keys?.Add(s3ImageKey);
-        //         newServiceCategory.Images?.Add($"{_appSettings.CloudFrontUrl}{s3ImageKey}");
-        //
-        //     }
-        // }
+        if (request.Images == null) return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
+        
+        foreach (var imageFile in request.Images)
+        {
+            var s3ImageKey = await UploadImageAsync(imageFile, userContext.UserId, ctx);
 
-        await _serviceCategoryCollection.InsertOneAsync(newServiceCategory, null, ctx);
-        return newServiceCategory;
+            newServiceCategory.ImagesS3Keys
+                .Add(s3ImageKey); // ImagesS3Keys list is now guaranteed to be initialized
+            newServiceCategory.Images.Add(
+                $"{_appSettings.CloudFrontUrl}{s3ImageKey}"); // Ensure the URL is constructed correctly
+        }
+
+        return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
     }
 
-    private async Task<string> UploadImageAsync(Stream fileStream, Guid userId, string fileExtension, CancellationToken cancellationToken)
+    private async Task<string> UploadImageAsync(IFile image, Guid userId, CancellationToken cancellationToken)
     {
-        var key = $"price-book/{userId}/service-category/{Guid.NewGuid()}{fileExtension}"; // Append the extension to the key
+        // Generate the key with the file extension
+        var fileExtension = Path.GetExtension(image.Name);
+        var key = $"price-book/{userId}/service-category/{Guid.NewGuid()}{image.Name}{fileExtension}";
+
+        await using var fileStream = image.OpenReadStream();
+        
         var putRequest = new PutObjectRequest
         {
             BucketName = _appSettings.S3BucketName,
             Key = key,
-            InputStream = fileStream,
-            AutoCloseStream = false, // Set to true if you want AWS SDK to close stream automatically
+            InputStream = fileStream, // Provide the memory stream with the file's content
+            AutoCloseStream = true, // It's okay to auto-close now since we are using a using block
         };
 
         try
         {
-            await _s3Client.PutObjectAsync(putRequest, cancellationToken);
+            var response = await _s3Client.PutObjectAsync(putRequest, cancellationToken);
             return key;
         }
         catch (Exception e)

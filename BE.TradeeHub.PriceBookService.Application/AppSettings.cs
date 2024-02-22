@@ -24,7 +24,7 @@ public class AppSettings : IAppSettings
         AwsAccessKeyId = config["AWS_ACCESS_KEY_ID"];
         AwsSecretAccessKey = config["AWS_SECRET_ACCESS_KEY"];
         S3BucketName = config.GetSection("AppSettings:AWS:S3BucketName").Value;
-        CloudFrontUrl = config.GetSection("AppSettings:AWS:S3BucketName").Value;
+        CloudFrontUrl = config.GetSection("AppSettings:AWS:CloudFrontUrl").Value;
         AllowedDomains = config.GetSection("AppSettings:AllowedOrigins").Get<string[]>();
         MongoDbConnectionString = config.GetSection("AppSettings:MongoDB:ConnectionString").Value;
         MongoDbDatabaseName = config.GetSection("AppSettings:MongoDB:DatabaseName").Value;
