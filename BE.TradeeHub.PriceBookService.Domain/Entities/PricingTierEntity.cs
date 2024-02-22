@@ -12,7 +12,7 @@ public class PricingTierEntity
     /// The range of the pricing tier for the unit proportion for example:
     /// If the range of the quantity/unit 1-10 then I would have certain costs and pricing if the quantity/unit is 11-20 then I would have different costs and pricing
     /// </summary>
-    public required Range<decimal> UnitRange { get; set; }
+    public Range<decimal> UnitRange { get; set; }
 
     /// <summary>
     /// Cost of the Entity for the Unite Range
@@ -23,4 +23,14 @@ public class PricingTierEntity
     /// Price of the entity for the Unit Range
     /// </summary>
     public decimal Price { get; set; }
+    
+    public PricingTierEntity()
+    {
+    }
+    public PricingTierEntity (Range<decimal> unitRange, decimal? cost, decimal price)
+    {
+        UnitRange = unitRange;
+        Cost = cost;
+        Price = price;
+    }
 }

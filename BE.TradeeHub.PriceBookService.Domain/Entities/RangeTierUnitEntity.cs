@@ -15,5 +15,15 @@ public class RangeTierUnitEntity
     /// example time based maybe it takes me 2h to install 1 thermostat but I can do 2 in 3h
     /// so the quantity is 3 in the context of hours and only charge for 3 hours while before I was charging for 4
     /// </summary>
-    public required Range<decimal> Range { get; set; }
+    public Range<decimal> Range { get; set; }
+    
+    public RangeTierUnitEntity()
+    {
+    }
+    
+    public RangeTierUnitEntity (decimal quantity, Range<decimal> range)
+    {
+        Quantity = quantity;
+        Range = range;
+    }
 }

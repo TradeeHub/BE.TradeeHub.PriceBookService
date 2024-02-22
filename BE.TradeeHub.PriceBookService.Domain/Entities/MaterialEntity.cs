@@ -19,7 +19,7 @@ public class MaterialEntity : AuditableEntity
     /// <summary>
     /// The Name of the Material
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// The Description of the Material
@@ -49,20 +49,41 @@ public class MaterialEntity : AuditableEntity
     /// <summary>
     /// Unit of the material for example sqm, m, kg, etc
     /// </summary>
-    public required string UnitType { get; set; }
+    public string UnitType { get; set; }
 
     /// <summary>
     /// Multiple Images of the material
     /// </summary>
-    public List<string>? ImageUrl { get; set; }
+    public List<string>? Images { get; set; }
 
     /// <summary>
     /// Links to the online material store where the material can be purchased
     /// </summary>
-    public List<string>? OnlineMaterialUrl { get; set; }
+    public List<string>? OnlineMaterialUrls { get; set; }
 
     /// <summary>
     /// Price tiers for the material based on the quantity of the material example 1-10, 11-20, 21-30 each tier will have a different price
     /// </summary>
     public List<PricingTierEntity>? PricingTiers { get; set; }
+    
+    public MaterialEntity()
+    {
+        
+    }
+    
+    public MaterialEntity (string name, string? description, string? identifier, MarkupEntity? markup, decimal cost, decimal price, string unitType, List<string>? images, List<string>? onlineMaterialUrls, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
+    {
+        Name = name;
+        Description = description;
+        Identifier = identifier;
+        Markup = markup;
+        Cost = cost;
+        Price = price;
+        UnitType = unitType;
+        Images = images;
+        OnlineMaterialUrls = onlineMaterialUrls;
+        PricingTiers = pricingTiers;
+        UserOwnerId = userOwnerId;
+        CreatedBy = createdBy;
+    }
 }

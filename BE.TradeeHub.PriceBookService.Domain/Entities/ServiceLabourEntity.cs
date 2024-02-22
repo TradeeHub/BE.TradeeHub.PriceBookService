@@ -35,4 +35,16 @@ public class ServiceLabourEntity
     /// Example: If service is to tile an area of 1-30sqm the the quantity of hours can be 15 while if they do an area of 31-60sqm then the quantity of hours can be 25 less than the 30sqm
     ///  </summary>
     public List<RangeTierUnitEntity>? Ranges { get; set; }
+    
+    public ServiceLabourEntity()
+    {
+    }
+    
+    public ServiceLabourEntity (ObjectId labourRateId, decimal? quantity, decimal? ratio, List<RangeTierUnitEntity>? ranges)
+    {
+        LabourRateId = labourRateId;
+        Quantity = quantity;
+        Ratio = ratio;
+        Ranges = ranges;
+    }
 }

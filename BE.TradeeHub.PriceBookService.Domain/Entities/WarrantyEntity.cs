@@ -19,7 +19,7 @@ public class WarrantyEntity : AuditableEntity
     /// <summary>
     /// The name of the warranty
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// Warranty Type
@@ -34,15 +34,30 @@ public class WarrantyEntity : AuditableEntity
     /// <summary>
     /// Warranty Terms
     /// </summary>
-    public required string Terms { get; set; }
+    public string Terms { get; set; }
 
     /// <summary>
     /// Warranty Duration
     /// </summary>
-    public required WarrantyDurationEntity WarrantyDuration { get; set; }
+    public WarrantyDurationEntity WarrantyDuration { get; set; }
 
     /// <summary>
     /// Warranty price
     /// </summary>
     public decimal? Price { get; set; }
+    
+    public WarrantyEntity()
+    {
+    }
+    
+    public WarrantyEntity (List<ObjectId>? services, string name, string? warrantyType, string? description, string terms, WarrantyDurationEntity warrantyDuration, decimal? price, Guid userOwnerId, Guid createdBy)
+    {
+        Services = services;
+        Name = name;
+        WarrantyType = warrantyType;
+        Description = description;
+        Terms = terms;
+        WarrantyDuration = warrantyDuration;
+        Price = price;
+    }
 }

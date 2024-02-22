@@ -11,16 +11,18 @@ public class ServiceCategoryEntity : AuditableEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
 
+    public ObjectId? ParentServiceCategory { get; set; }
+
     /// <summary>
     /// The name of the service category
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// The description of the service category
     /// </summary>
     public string? Description { get; set; }
-    
+
     public List<string>? ImagesS3Keys { get; set; }
 
     /// <summary>
@@ -37,4 +39,21 @@ public class ServiceCategoryEntity : AuditableEntity
     /// Services that are part of this service category
     /// </summary>
     public List<ObjectId>? Services { get; set; } // each service can have sub-services aka another ServiceEntity
+
+    public ServiceCategoryEntity()
+    {
+    }
+
+    public ServiceCategoryEntity(string name, string? description, Guid userOwnerId, Guid createdBy,
+        ObjectId? parentServiceCategory)
+    {
+        Name = name;
+        Description = description;
+        UserOwnerId = userOwnerId;
+        CreatedBy = createdBy;
+        ParentServiceCategory = parentServiceCategory;
+        ImagesS3Keys = new List<string>();
+        Images = new List<string>();
+        CreatedAt = DateTime.UtcNow;
+    }
 }

@@ -33,4 +33,17 @@ public class AdditionalServiceCostEntity
     /// Tax rate id reference of the additional cost
     /// </summary>
     public ObjectId? TaxRateId { get; set; }
+    
+    public AdditionalServiceCostEntity()
+    {
+    }
+    
+    public AdditionalServiceCostEntity (string name, string? description, decimal cost, TaxType? taxRate, ObjectId? taxRateId)
+    {
+        Name = name;
+        Description = description;
+        Cost = cost;
+        TaxRate = taxRate;
+        TaxRateId = taxRateId;
+    }
 }

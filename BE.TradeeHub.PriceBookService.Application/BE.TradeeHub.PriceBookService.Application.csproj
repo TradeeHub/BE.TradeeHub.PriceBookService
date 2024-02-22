@@ -16,7 +16,6 @@
     <ItemGroup>
       <Folder Include="GraphQL\DataLoader\" />
       <Folder Include="GraphQL\QueryResolvers\" />
-      <Folder Include="Mappings\" />
       <Folder Include="Responses\" />
     </ItemGroup>
 

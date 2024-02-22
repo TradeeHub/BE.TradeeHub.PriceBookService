@@ -18,7 +18,7 @@ public class ServiceEntity : AuditableEntity
     /// <summary>
     /// The name of the service
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// The quantity for a given service
@@ -39,7 +39,7 @@ public class ServiceEntity : AuditableEntity
     /// Dynamic: Install floor tiles the quantity will depend on the sqm of the floor of each customer
     /// and when the customer has given the sqm I then cal pass the amount and generate a service cost and price
     /// </summary>
-    public required ServiceCreationType ServiceCreationType { get; set; }
+    public ServiceCreationType ServiceCreationType { get; set; }
 
     /// <summary>
     /// Enforced the service to use the calculated price and cost instead of manually setting the price and cost
@@ -69,7 +69,7 @@ public class ServiceEntity : AuditableEntity
     /// <summary>
     /// List of images for the service
     /// </summary>
-    public List<string>? ImageUrl { get; set; }
+    public List<string>? Images{ get; set; }
 
     /// <summary>
     /// Allows the service to be booked online
@@ -115,4 +115,34 @@ public class ServiceEntity : AuditableEntity
     /// The Service bundles that can be applied to the service
     /// </summary>
     public List<ObjectId>? Bundles { get; set; }
+    
+    public ServiceEntity()
+    {
+    }
+    
+    public ServiceEntity (string name, decimal? unit, string? unitType, ServiceCreationType serviceCreationType, bool useCalculatedPrice, ServiceDurationEntity? duration, decimal cost, decimal price, string? description, List<string>? images, bool allowOnlineBooking, ObjectId serviceCategory, List<ServiceMaterialEntity>? materials, List<ServiceLabourEntity>? laborRates, ObjectId taxRate, MarkupEntity? markup, List<AdditionalServiceCostEntity>? additionalCosts, List<ObjectId>? warranties, Guid userOwnerId, Guid createdBy)
+    {
+        Name = name;
+        Unit = unit;
+        UnitType = unitType;
+        ServiceCreationType = serviceCreationType;
+        UseCalculatedPrice = useCalculatedPrice;
+        Duration = duration;
+        Cost = cost;
+        Price = price;
+        Description = description;
+        Images = images;
+        AllowOnlineBooking = allowOnlineBooking;
+        ServiceCategory = serviceCategory;
+        Materials = materials;
+        LaborRates = laborRates;
+        TaxRate = taxRate;
+        Markup = markup;
+        AdditionalCosts = additionalCosts;
+        Warranties = warranties;
+        Bundles = null;
+        UserOwnerId = userOwnerId;
+        CreatedBy = createdBy;
+    }
+    
 }

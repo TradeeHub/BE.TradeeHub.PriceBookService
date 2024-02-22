@@ -17,4 +17,14 @@ public class MarkupEntity
     /// The value of the markup
     /// </summary>
     public decimal Value { get; set; }
+    
+    public MarkupEntity()
+    {
+    }
+    
+    public MarkupEntity(MarkupType type, decimal value)
+    {
+        Type = type;
+        Value = value;
+    }
 }

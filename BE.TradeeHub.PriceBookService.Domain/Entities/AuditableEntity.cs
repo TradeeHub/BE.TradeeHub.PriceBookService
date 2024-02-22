@@ -10,7 +10,7 @@ public abstract class AuditableEntity
     /// <summary>
     /// The unique identifier of the User who owns this entity.
     /// </summary>
-    public required Guid UserOwnerId { get; set; }
+    public Guid UserOwnerId { get; set; }
 
     /// <summary>
     /// CreatedAt is the date and time when the entity was created.

@@ -14,15 +14,29 @@ public class TaxRateEntity : AuditableEntity
     /// <summary>
     /// The tax rate that can be applied to a service or material or labour
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// The description of the tax rate
     /// </summary>
-    public required string? Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// The percentage of the tax rate
     /// </summary>
     public decimal PercentageRate { get; set; }
+
+    public TaxRateEntity()
+    {
+        
+    }
+    public TaxRateEntity (string name, string? description, decimal percentageRate, Guid userOwnerId, Guid createdBy)
+    {
+        Name = name;
+        Description = description;
+        PercentageRate = percentageRate;
+        UserOwnerId = userOwnerId;
+        CreatedBy = createdBy;
+        CreatedAt = DateTime.UtcNow;
+    }
 }

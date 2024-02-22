@@ -32,4 +32,16 @@ public class ServiceMaterialEntity
     /// to be able to set the quantity based on the range of the service
     /// </summary>
     public List<RangeTierUnitEntity>? Ranges { get; set; }
+    
+    public ServiceMaterialEntity()
+    {
+    }
+    
+    public ServiceMaterialEntity (ObjectId materialId, decimal? quantity, decimal? ratio, List<RangeTierUnitEntity>? ranges)
+    {
+        MaterialId = materialId;
+        Quantity = quantity;
+        Ratio = ratio;
+        Ranges = ranges;
+    }
 }

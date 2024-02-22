@@ -17,12 +17,12 @@ public class LaborRateEntity : AuditableEntity
     /// <summary>
     /// Labor rate name
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     /// Labor rate description
     /// </summary>
-    public required string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// Labor rate type which could be hourly, daily, sqm, sqft, meter, etc
@@ -49,4 +49,22 @@ public class LaborRateEntity : AuditableEntity
     /// Pricing tiers for the labor rate which can very based on the quantity of the rate type if I have specific pricing for different quantities
     /// </summary>
     public List<PricingTierEntity>? PricingTiers { get; set; }
+    
+    public LaborRateEntity()
+    {
+    }
+    
+    public LaborRateEntity (string name, string? description, string? rateType, decimal cost, decimal price,List<ObjectId>? services, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
+    {
+        Name = name;
+        Description = description;
+        RateType = rateType;
+        Cost = cost;
+        Price = price;
+        Services = services;
+        PricingTiers = pricingTiers;
+        UserOwnerId = userOwnerId;
+        CreatedBy = createdBy;
+        CreatedAt = DateTime.UtcNow;
+    }
 }
