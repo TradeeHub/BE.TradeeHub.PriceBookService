@@ -70,7 +70,7 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// List of images for the service
     /// </summary>
-    public List<string>? Images{ get; set; }
+    public List<ImageEntity>? Images { get; set; }
 
     /// <summary>
     /// Allows the service to be booked online
@@ -95,7 +95,7 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// The tax rate id that will map to the TaxRateEntity via graphql
     /// </summary>
-    public ObjectId TaxRate { get; set; }
+    public ObjectId TaxRateId { get; set; }
 
     /// <summary>
     /// The markup that will be applied to the service if any
@@ -106,22 +106,28 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
     /// Additional costs that can be applied to the service
     /// </summary>
     public List<AdditionalServiceCostEntity>? AdditionalCosts { get; set; }
-    
+
     /// <summary>
     /// Warranties that can be applied to the service
     /// </summary>
     public List<ObjectId>? Warranties { get; set; }
-    
+
     /// <summary>
     /// The Service bundles that can be applied to the service
     /// </summary>
     public List<ObjectId>? Bundles { get; set; }
-    
+
     public ServiceEntity()
     {
     }
-    
-    public ServiceEntity (string name, decimal? unit, string? unitType, ServiceCreationType serviceCreationType, bool useCalculatedPrice, ServiceDurationEntity? duration, decimal cost, decimal price, string? description, List<string>? images, bool allowOnlineBooking, ObjectId serviceCategory, List<ServiceMaterialEntity>? materials, List<ServiceLabourEntity>? laborRates, ObjectId taxRate, MarkupEntity? markup, List<AdditionalServiceCostEntity>? additionalCosts, List<ObjectId>? warranties, Guid userOwnerId, Guid createdBy)
+
+    public ServiceEntity(string name, decimal? unit, string? unitType, ServiceCreationType serviceCreationType,
+        bool useCalculatedPrice, ServiceDurationEntity? duration, decimal cost, decimal price, string? description,
+        bool allowOnlineBooking, ObjectId serviceCategory, List<ServiceMaterialEntity>? materials,
+        List<ServiceLabourEntity>? laborRates, ObjectId taxRateId, MarkupEntity? markup,
+        List<AdditionalServiceCostEntity>? additionalCosts,
+        List<ObjectId>? warranties,
+        Guid userOwnerId, Guid createdBy)
     {
         Name = name;
         Unit = unit;
@@ -132,18 +138,18 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
         Cost = cost;
         Price = price;
         Description = description;
-        Images = images;
+        Images = new List<ImageEntity>();
         AllowOnlineBooking = allowOnlineBooking;
         ServiceCategory = serviceCategory;
         Materials = materials;
         LaborRates = laborRates;
-        TaxRate = taxRate;
+        TaxRateId = taxRateId;
         Markup = markup;
         AdditionalCosts = additionalCosts;
         Warranties = warranties;
         Bundles = null;
         UserOwnerId = userOwnerId;
         CreatedBy = createdBy;
+        CreatedAt = DateTime.UtcNow;
     }
-    
 }

@@ -55,7 +55,7 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// Multiple Images of the material
     /// </summary>
-    public List<string>? Images { get; set; }
+    public List<ImageEntity>? Images { get; set; }
 
     /// <summary>
     /// Links to the online material store where the material can be purchased
@@ -72,7 +72,7 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
         
     }
     
-    public MaterialEntity (string name, string? description, string? identifier, MarkupEntity? markup, decimal cost, decimal price, string unitType, List<string>? images, List<string>? onlineMaterialUrls, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
+    public MaterialEntity (string name, string? description, string? identifier, MarkupEntity? markup, decimal cost, decimal price, string unitType, List<string>? onlineMaterialUrls, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
     {
         Name = name;
         Description = description;
@@ -81,10 +81,11 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
         Cost = cost;
         Price = price;
         UnitType = unitType;
-        Images = images;
+        Images = new List<ImageEntity>();
         OnlineMaterialUrls = onlineMaterialUrls;
         PricingTiers = pricingTiers;
         UserOwnerId = userOwnerId;
         CreatedBy = createdBy;
+        CreatedAt = DateTime.UtcNow;
     }
 }

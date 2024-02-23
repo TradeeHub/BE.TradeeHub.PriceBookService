@@ -15,7 +15,7 @@ public static class Mappings
     public static MaterialEntity ToMaterialEntity(this AddMaterialRequest request, Guid userOwnerId, Guid createdBy)
     {
         return new MaterialEntity(request.Name, request.Description, request.Identifier, request.Markup, request.Cost,
-            request.Price, request.UnitType, request.Images, request.OnlineMaterialUrls, request.PricingTiers,
+            request.Price, request.UnitType, request.OnlineMaterialUrls, request.PricingTiers,
             userOwnerId, createdBy);
     }
 
@@ -23,10 +23,10 @@ public static class Mappings
     {
         return new ServiceEntity(request.Name, request.Unit, request.UnitType, request.ServiceCreationType,
             request.UseCalculatedPrice, request.Duration?.ToServiceDurationEntity(), request.Cost, request.Price,
-            request.Description, request.Images, request.AllowOnlineBooking, request.ServiceCategory,
+            request.Description, request.AllowOnlineBooking, request.ServiceCategory,
             request.Materials?.Select(m => m.ToServiceMaterialEntity()).ToList(),
             request.LaborRates?.Select(l => l.ToServiceLabourEntity()).ToList(),
-            request.TaxRate, request.Markup?.ToMarkupEntity(),
+            request.TaxRateId, request.Markup?.ToMarkupEntity(),
             request.AdditionalCosts?.Select(ac => ac.ToAdditionalServiceCostEntity()).ToList(), request.Warranties,
             userOwnerId, createdBy);
     }
@@ -37,9 +37,9 @@ public static class Mappings
         return new ServiceBundleEntity
         (request.ServiceId, request.Name, request.Unit, request.UnitType, request.ServiceCreationType,
             request.UseCalculatedPrice, request.Duration?.ToServiceDurationEntity(), request.Cost,
-            request.Price, request.Description, request.Images, request.AllowOnlineBooking, request.ServiceCategory,
+            request.Price, request.Description, request.AllowOnlineBooking, request.ServiceCategory,
             request.Materials?.Select(m => m.ToServiceMaterialEntity()).ToList(),
-            request.LaborRates?.Select(l => l.ToServiceLabourEntity()).ToList(), request.TaxRate,
+            request.LaborRates?.Select(l => l.ToServiceLabourEntity()).ToList(), request.TaxRateId,
             request.Markup?.ToMarkupEntity(),
             request.AdditionalCosts?.Select(ac => ac.ToAdditionalServiceCostEntity()).ToList(), request.Warranties,
             userOwnerId, createdBy

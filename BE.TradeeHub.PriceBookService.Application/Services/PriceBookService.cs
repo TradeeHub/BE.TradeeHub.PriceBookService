@@ -30,13 +30,12 @@ public class PriceBookService : IPriceBookService
         if (request.Images == null || !request.Images.Any())
             return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
 
-        var uploadTasks = request.Images.Select(image => UploadImageAsync(image, userContext.UserId, ctx)).ToList();
-        var s3ImageKeys = await Task.WhenAll(uploadTasks);
+        var uploadTasks = request.Images.Select(image => UploadImageAsync(image, userContext.UserId,"service-category", ctx)).ToList();
+        var images = await Task.WhenAll(uploadTasks);
 
-        foreach (var s3ImageKey in s3ImageKeys)
+        foreach (var image in images)
         {
-            newServiceCategory.ImagesS3Keys?.Add(s3ImageKey);
-            newServiceCategory.Images?.Add($"{_appSettings.CloudFrontUrl}{s3ImageKey}");
+            newServiceCategory.Images?.Add(image);
         }
 
         return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
@@ -55,6 +54,16 @@ public class PriceBookService : IPriceBookService
     {
         var serviceEntity = request.ToServiceEntity(userContext.UserId, userContext.UserId);
         
+        if (request.Images == null || !request.Images.Any()) return await _priceBookRepository.CreateService(serviceEntity, ctx);
+
+        var uploadTasks = request.Images.Select(image => UploadImageAsync(image, userContext.UserId,"services", ctx)).ToList();
+        var images = await Task.WhenAll(uploadTasks);
+
+        foreach (var image in images)
+        {
+            serviceEntity.Images?.Add(image);
+        }
+        
         return await _priceBookRepository.CreateService(serviceEntity, ctx);
     }
 
@@ -70,6 +79,16 @@ public class PriceBookService : IPriceBookService
         CancellationToken ctx)
     {
         var materialEntity = request.ToMaterialEntity(userContext.UserId, userContext.UserId);
+        
+        if (request.Images == null || !request.Images.Any()) return await _priceBookRepository.CreateMaterial(materialEntity, ctx);
+        
+        var uploadTasks = request.Images.Select(image => UploadImageAsync(image, userContext.UserId,"materials", ctx)).ToList();
+        var images = await Task.WhenAll(uploadTasks);
+
+        foreach (var image in images)
+        {
+            materialEntity.Images?.Add(image);
+        }
         
         return await _priceBookRepository.CreateMaterial(materialEntity, ctx);
     }
@@ -90,9 +109,9 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateWarranty(warrantyEntity, ctx);
     }
 
-    private async Task<string> UploadImageAsync(IFile image, Guid userId, CancellationToken cancellationToken)
+    private async Task<ImageEntity> UploadImageAsync(IFile image, Guid userId, string folderName, CancellationToken cancellationToken)
     {
-        var key = $"price-book/{userId}/service-category/{Guid.NewGuid()}_{image.Name}";
+        var key = $"price-book/{userId}/{folderName}/{Guid.NewGuid()}_{image.Name}";
 
         await using var fileStream = image.OpenReadStream();
 
@@ -107,7 +126,9 @@ public class PriceBookService : IPriceBookService
         try
         {
             await _s3Client.PutObjectAsync(putRequest, cancellationToken);
-            return key;
+            var imageCloudFrontUrl = $"{_appSettings.CloudFrontUrl}{key}";
+            
+            return new ImageEntity(imageCloudFrontUrl,key, image.Name, image.Length, image.ContentType, userId);
         }
         catch (Exception e)
         {

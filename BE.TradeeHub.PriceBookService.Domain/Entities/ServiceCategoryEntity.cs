@@ -23,13 +23,11 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
     /// The description of the service category
     /// </summary>
     public string? Description { get; set; }
-
-    public List<string>? ImagesS3Keys { get; set; }
-
+    
     /// <summary>
     /// Multiple Images of the service category
     /// </summary>
-    public List<string>? Images { get; set; }
+    public List<ImageEntity>? Images { get; set; }
 
     /// <summary>
     /// Service categories that are sub-categories of this service category
@@ -53,8 +51,7 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
         UserOwnerId = userOwnerId;
         CreatedBy = createdBy;
         ParentServiceCategory = parentServiceCategory;
-        ImagesS3Keys = new List<string>();
-        Images = new List<string>();
+        Images = new List<ImageEntity>();
         CreatedAt = DateTime.UtcNow;
     }
 }

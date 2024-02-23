@@ -11,7 +11,7 @@ public class AddMaterialRequest
     public decimal Cost { get; set; }
     public decimal Price { get; set; }
     public required string UnitType { get; set; }
-    public List<string>? Images { get; set; }
+    public IEnumerable<IFile>? Images { get; set; }
     public List<string>? OnlineMaterialUrls { get; set; }
     public List<PricingTierEntity>? PricingTiers { get; set; }
 }

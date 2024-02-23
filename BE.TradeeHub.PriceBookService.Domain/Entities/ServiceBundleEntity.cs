@@ -69,7 +69,7 @@ public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// List of images for the service
     /// </summary>
-    public List<string>? Images { get; set; }
+    public List<ImageEntity>? Images { get; set; }
 
     /// <summary>
     /// Allows the service to be booked online
@@ -115,7 +115,7 @@ public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
     {
     }
     
-    public ServiceBundleEntity (ObjectId serviceId, string name, decimal? unit, string? unitType, ServiceCreationType serviceCreationType, bool useCalculatedPrice, ServiceDurationEntity? duration, decimal cost, decimal price, string? description, List<string>? images, bool allowOnlineBooking, ObjectId serviceCategory, List<ServiceMaterialEntity>? materials, List<ServiceLabourEntity>? laborRates, ObjectId taxRate, MarkupEntity? markup, List<AdditionalServiceCostEntity>? additionalCosts, List<ObjectId>? warranties, Guid userOwnerId, Guid createdBy)
+    public ServiceBundleEntity (ObjectId serviceId, string name, decimal? unit, string? unitType, ServiceCreationType serviceCreationType, bool useCalculatedPrice, ServiceDurationEntity? duration, decimal cost, decimal price, string? description, bool allowOnlineBooking, ObjectId serviceCategory, List<ServiceMaterialEntity>? materials, List<ServiceLabourEntity>? laborRates, ObjectId taxRate, MarkupEntity? markup, List<AdditionalServiceCostEntity>? additionalCosts, List<ObjectId>? warranties, Guid userOwnerId, Guid createdBy)
     {
         ServiceId = serviceId;
         Name = name;
@@ -127,7 +127,7 @@ public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
         Cost = cost;
         Price = price;
         Description = description;
-        Images = images;
+        Images = new List<ImageEntity>();
         AllowOnlineBooking = allowOnlineBooking;
         ServiceCategory = serviceCategory;
         Materials = materials;
@@ -138,5 +138,6 @@ public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
         Warranties = warranties;
         UserOwnerId = userOwnerId;
         CreatedBy = createdBy;
+        CreatedAt = DateTime.UtcNow;
     }
 }
