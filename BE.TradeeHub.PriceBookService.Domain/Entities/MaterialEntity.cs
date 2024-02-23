@@ -1,4 +1,5 @@
-﻿using HotChocolate.Types.Relay;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -7,7 +8,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// <summary>
 /// Material that can be used in a service
 /// </summary>
-public class MaterialEntity : AuditableEntity
+public class MaterialEntity : AuditableEntity, IOwnedEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
 

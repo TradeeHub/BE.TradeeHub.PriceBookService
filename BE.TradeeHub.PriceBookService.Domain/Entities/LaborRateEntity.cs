@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -10,7 +11,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// Example: hourly, daily, sqm, sqft, meter, etc so that I can charge the customer accordingly
 /// Example: I can have a labor rate for painting which is hourly and another labor rate for tiling which is sqm etc...
 /// </summary>
-public class LaborRateEntity : AuditableEntity
+public class LaborRateEntity : AuditableEntity, IOwnedEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
 

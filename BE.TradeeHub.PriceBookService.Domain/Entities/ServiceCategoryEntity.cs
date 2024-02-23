@@ -1,4 +1,5 @@
-﻿using HotChocolate.Types.Relay;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -7,7 +8,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// <summary>
 /// Top level service category which can hold multiple services or other service categories as sub categories
 /// </summary>
-public class ServiceCategoryEntity : AuditableEntity
+public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
 

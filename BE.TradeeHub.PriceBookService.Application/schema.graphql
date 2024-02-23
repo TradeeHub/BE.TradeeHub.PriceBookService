@@ -17,10 +17,10 @@ type AdditionalServiceCostEntity {
 }
 
 type LaborRateEntity {
+  id: ID!
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
-  id: ID!
   name: String!
   description: String
   rateType: String
@@ -28,11 +28,8 @@ type LaborRateEntity {
   price: Decimal!
   services: [ID!]
   pricingTiers: [PricingTierEntity!]
-  userOwnerId: UUID!
   createdAt: DateTime!
-  createdBy: UUID!
   modifiedAt: DateTime
-  modifiedBy: UUID
 }
 
 type MarkupEntity {
@@ -96,10 +93,10 @@ type RangeTierUnitEntity {
 }
 
 type ServiceBundleEntity {
+  id: ID!
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
-  id: ID!
   serviceId: ID!
   name: String!
   unit: Decimal
@@ -119,11 +116,8 @@ type ServiceBundleEntity {
   markup: MarkupEntity
   additionalCosts: [AdditionalServiceCostEntity!]
   warranties: [ID!]
-  userOwnerId: UUID!
   createdAt: DateTime!
-  createdBy: UUID!
   modifiedAt: DateTime
-  modifiedBy: UUID
 }
 
 type ServiceCategoryEntity implements Node {
@@ -399,11 +393,6 @@ enum DurationType {
   MONTHS
 }
 
-enum LaborRateType {
-  HOURLY
-  DAILY
-}
-
 enum MarkupType {
   FIXED
   PERCENTAGE
@@ -433,8 +422,6 @@ scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time"
 
 "The built-in `Decimal` scalar type."
 scalar Decimal
-
-scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
 
 "The `Upload` scalar type represents a file upload."
 scalar Upload

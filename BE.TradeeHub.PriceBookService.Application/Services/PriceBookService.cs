@@ -5,10 +5,7 @@ using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using Amazon.S3.Model;
 using BE.TradeeHub.PriceBookService.Application.Mappings;
-using BE.TradeeHub.PriceBookService.Domain.Enums;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
-using MongoDB.Bson;
-using Path = System.IO.Path;
 
 namespace BE.TradeeHub.PriceBookService.Application.Services;
 
@@ -30,8 +27,9 @@ public class PriceBookService : IPriceBookService
     {
         var newServiceCategory = request.ToServiceCategoryEntity(userContext.UserId, userContext.UserId);
 
-        if (request.Images == null || !request.Images.Any()) return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
-        
+        if (request.Images == null || !request.Images.Any())
+            return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
+
         var uploadTasks = request.Images.Select(image => UploadImageAsync(image, userContext.UserId, ctx)).ToList();
         var s3ImageKeys = await Task.WhenAll(uploadTasks);
 
@@ -45,75 +43,76 @@ public class PriceBookService : IPriceBookService
     }
 
     public async Task<LaborRateEntity> AddLaborRateAsync(UserContext userContext, AddLaborRateRequest request,
-            CancellationToken ctx)
+        CancellationToken ctx)
+    {
+        var laborRateEntity = request.ToLaborRateEntity(userContext.UserId, userContext.UserId);
+        
+        return await _priceBookRepository.CreateLabourRate(laborRateEntity, ctx);
+    }
+
+    public async Task<ServiceEntity> AddServiceAsync(UserContext userContext, AddServiceRequest request,
+        CancellationToken ctx)
+    {
+        var serviceEntity = request.ToServiceEntity(userContext.UserId, userContext.UserId);
+        
+        return await _priceBookRepository.CreateService(serviceEntity, ctx);
+    }
+
+    public async Task<ServiceBundleEntity> AddServiceBundleAsync(UserContext userContext,
+        AddServiceBundleRequest request, CancellationToken ctx)
+    {
+        var serviceBundleEntity = request.ToServiceBundleEntity(userContext.UserId, userContext.UserId);
+        
+        return await _priceBookRepository.CreateServiceBundle(serviceBundleEntity, ctx);
+    }
+
+    public async Task<MaterialEntity> AddMaterialAsync(UserContext userContext, AddMaterialRequest request,
+        CancellationToken ctx)
+    {
+        var materialEntity = request.ToMaterialEntity(userContext.UserId, userContext.UserId);
+        
+        return await _priceBookRepository.CreateMaterial(materialEntity, ctx);
+    }
+
+    public async Task<TaxRateEntity> AddTaxRateAsync(UserContext userContext, AddTaxRateRequest request,
+        CancellationToken ctx)
+    {
+        var taxRateEntity = request.ToTaxRateEntity(userContext.UserId, userContext.UserId);
+        
+        return await _priceBookRepository.CreateTaxRate(taxRateEntity, ctx);
+    }
+
+    public async Task<WarrantyEntity> AddWarrantyAsync(UserContext userContext, AddWarrantyRequest request,
+        CancellationToken ctx)
+    {
+        var warrantyEntity = request.ToWarrantyEntity(userContext.UserId, userContext.UserId);
+        
+        return await _priceBookRepository.CreateWarranty(warrantyEntity, ctx);
+    }
+
+    private async Task<string> UploadImageAsync(IFile image, Guid userId, CancellationToken cancellationToken)
+    {
+        var key = $"price-book/{userId}/service-category/{Guid.NewGuid()}_{image.Name}";
+
+        await using var fileStream = image.OpenReadStream();
+
+        var putRequest = new PutObjectRequest
         {
-            return new LaborRateEntity() { Name = "Glen", UserOwnerId = userContext.UserId };
+            BucketName = _appSettings.S3BucketName,
+            Key = key,
+            InputStream = fileStream, // Provide the memory stream with the file's content
+            AutoCloseStream = true, // It's okay to auto-close now since we are using a using block
+        };
+
+        try
+        {
+            await _s3Client.PutObjectAsync(putRequest, cancellationToken);
+            return key;
         }
-
-        public async Task<ServiceEntity> AddServiceAsync(UserContext userContext, AddServiceRequest request,
-            CancellationToken ctx)
+        catch (Exception e)
         {
-            return new ServiceEntity()
-                { Name = "Glen", UserOwnerId = userContext.UserId, ServiceCreationType = ServiceCreationType.Fixed };
-        }
-
-        public async Task<ServiceBundleEntity> AddServiceBundleAsync(UserContext userContext,
-            AddServiceBundleRequest request, CancellationToken ctx)
-        {
-            return new ServiceBundleEntity()
-            {
-                Name = "Glen", UserOwnerId = userContext.UserId, ServiceCreationType = ServiceCreationType.Fixed,
-                ServiceId = new ObjectId()
-            };
-        }
-
-        public async Task<MaterialEntity> AddMaterialAsync(UserContext userContext, AddMaterialRequest request,
-            CancellationToken ctx)
-        {
-            return new MaterialEntity() { Name = "Glen", UserOwnerId = userContext.UserId, UnitType = "SQM" };
-        }
-
-        public async Task<TaxRateEntity> AddTaxRateAsync(UserContext userContext, AddTaxRateRequest request,
-            CancellationToken ctx)
-        {
-            return new TaxRateEntity() { Name = "Glen", UserOwnerId = userContext.UserId, Description = "THEFT" };
-        }
-
-        public async Task<WarrantyEntity> AddWarrantyAsync(UserContext userContext, AddWarrantyRequest request,
-            CancellationToken ctx)
-        {
-            return new WarrantyEntity()
-            {
-                Name = "Glen", UserOwnerId = userContext.UserId, Description = "THEFT", Terms = "ALL",
-                WarrantyDuration = new WarrantyDurationEntity()
-            };
-        }
-
-        private async Task<string> UploadImageAsync(IFile image, Guid userId, CancellationToken cancellationToken)
-        {
-            // Generate the key with the file extension
-            var fileExtension = Path.GetExtension(image.Name);
-            var key = $"price-book/{userId}/service-category/{Guid.NewGuid()}_{image.Name}";
-
-            await using var fileStream = image.OpenReadStream();
-
-            var putRequest = new PutObjectRequest
-            {
-                BucketName = _appSettings.S3BucketName,
-                Key = key,
-                InputStream = fileStream, // Provide the memory stream with the file's content
-                AutoCloseStream = true, // It's okay to auto-close now since we are using a using block
-            };
-
-            try
-            {
-                await _s3Client.PutObjectAsync(putRequest, cancellationToken);
-                return key;
-            }
-            catch (Exception e)
-            {
-                var message = $"Failed to upload image to S3. {e.Message}";
-                throw new Exception(message);
-            }
+            var message = $"Failed to upload image to S3. {e.Message}";
+            throw new Exception(message);
         }
     }
+}

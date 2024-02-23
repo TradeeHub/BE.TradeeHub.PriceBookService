@@ -4,6 +4,7 @@ using BE.TradeeHub.PriceBookService.Domain.Entities;
 
 namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Mutations;
 
+[MutationType]
 public class Mutation
 {
     public async Task<ServiceCategoryEntity> AddNewServiceCategoryAsync([Service] IPriceBookService priceBookService, [Service] UserContext userContext, AddNewServiceCategoryRequest request, CancellationToken ctx)

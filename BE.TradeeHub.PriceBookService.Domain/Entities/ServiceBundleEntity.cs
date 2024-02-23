@@ -1,11 +1,12 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 
-public class ServiceBundleEntity : AuditableEntity
+public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
     

@@ -1,4 +1,5 @@
-﻿using HotChocolate.Types.Relay;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -7,7 +8,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// <summary>
 /// The tax rate that can be applied to a service or material or labour
 /// </summary>
-public class TaxRateEntity : AuditableEntity
+public class TaxRateEntity : AuditableEntity, IOwnedEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
 

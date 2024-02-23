@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -11,7 +12,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// Example: Bathroom tiling, Kitchen tiling, Floor tiling etc
 /// Example: Installation of bathroom suite, Installation of kitchen suite, Installation of boiler etc
 /// </summary>
-public class ServiceEntity : AuditableEntity
+public class ServiceEntity : AuditableEntity, IOwnedEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
 
