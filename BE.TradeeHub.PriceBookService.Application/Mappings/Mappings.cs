@@ -14,7 +14,7 @@ public static class Mappings
 
     public static MaterialEntity ToMaterialEntity(this AddMaterialRequest request, Guid userOwnerId, Guid createdBy)
     {
-        return new MaterialEntity(request.Name, request.Description, request.Identifier, request.Markup, request.Cost,
+        return new MaterialEntity(request.Name, request.ServiceIds, request.Description, request.Identifier, request.Markup, request.Cost,
             request.Price, request.UnitType, request.OnlineMaterialUrls, request.PricingTiers,
             userOwnerId, createdBy);
     }

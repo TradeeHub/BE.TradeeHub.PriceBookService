@@ -1,5 +1,4 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
-using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -10,12 +9,12 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// </summary>
 public class MaterialEntity : AuditableEntity, IOwnedEntity
 {
-    [ID] [BsonId] public ObjectId Id { get; set; }
+    [BsonId] public ObjectId Id { get; set; }
 
     /// <summary>
     /// This enforces only certain cervices to show this option if null it's a global option
     /// </summary>
-    public List<ObjectId>? Services { get; set; }
+    public List<ObjectId>? ServiceIds { get; set; }
 
     /// <summary>
     /// The Name of the Material
@@ -66,15 +65,17 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     /// Price tiers for the material based on the quantity of the material example 1-10, 11-20, 21-30 each tier will have a different price
     /// </summary>
     public List<PricingTierEntity>? PricingTiers { get; set; }
-    
+
     public MaterialEntity()
     {
-        
     }
-    
-    public MaterialEntity (string name, string? description, string? identifier, MarkupEntity? markup, decimal cost, decimal price, string unitType, List<string>? onlineMaterialUrls, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
+
+    public MaterialEntity(string name, List<ObjectId>? serviceIds, string? description, string? identifier,
+        MarkupEntity? markup, decimal cost, decimal price, string unitType, List<string>? onlineMaterialUrls,
+        List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
     {
         Name = name;
+        ServiceIds = serviceIds;
         Description = description;
         Identifier = identifier;
         Markup = markup;

@@ -38,13 +38,13 @@ public abstract class AuditableEntity
     /// GraphQL Relay ID of the Owner that will be used to expose the entity to the GraphQL API.
     /// </summary>
     /// <returns></returns>
-    public UserEntity Owner() => new UserEntity { Id = UserOwnerId };
+    public UserEntity Owner() => new() { Id = UserOwnerId };
 
     /// <summary>
     /// GraphQL Relay ID of the Creator that will be used to expose the entity to the GraphQL API.
     /// </summary>
     /// <returns></returns>
-    public UserEntity Creator() => new UserEntity { Id = CreatedBy };
+    public UserEntity Creator() => new() { Id = CreatedBy };
 
     /// <summary>
     /// GraphQL Relay ID of the Modifier that will be used to expose the entity to the GraphQL API.

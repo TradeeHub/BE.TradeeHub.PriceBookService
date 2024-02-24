@@ -1,5 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
 namespace BE.TradeeHub.PriceBookService.Infrastructure.Extensions;
@@ -37,5 +38,16 @@ public static class MongoDbContextExtensions
         var taxRatesIndexKeys = Builders<TaxRateEntity>.IndexKeys.Ascending(tr => tr.UserOwnerId);
         var taxRatesIndexModel = new CreateIndexModel<TaxRateEntity>(taxRatesIndexKeys);
         dbContext.TaxRates.Indexes.CreateOne(taxRatesIndexModel);
+    }
+    
+    public static void AddMongoDbCollections(this IServiceCollection services)
+    {
+        services.AddSingleton<IMongoCollection<LaborRateEntity>>(sp => sp.GetRequiredService<MongoDbContext>().LabourRates);
+        services.AddSingleton<IMongoCollection<ServiceCategoryEntity>>(sp => sp.GetRequiredService<MongoDbContext>().ServiceCategories);
+        services.AddSingleton<IMongoCollection<ServiceEntity>>(sp => sp.GetRequiredService<MongoDbContext>().Services);
+        services.AddSingleton<IMongoCollection<MaterialEntity>>(sp => sp.GetRequiredService<MongoDbContext>().Materials);
+        services.AddSingleton<IMongoCollection<ServiceBundleEntity>>(sp => sp.GetRequiredService<MongoDbContext>().ServiceBundles);
+        services.AddSingleton<IMongoCollection<WarrantyEntity>>(sp => sp.GetRequiredService<MongoDbContext>().Warranties);
+        services.AddSingleton<IMongoCollection<TaxRateEntity>>(sp => sp.GetRequiredService<MongoDbContext>().TaxRates);
     }
 }

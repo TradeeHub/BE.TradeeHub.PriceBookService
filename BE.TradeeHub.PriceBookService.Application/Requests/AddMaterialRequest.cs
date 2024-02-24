@@ -1,10 +1,12 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
+using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Application.Requests;
 
 public class AddMaterialRequest
 {
     public required string Name { get; set; }
+    public List<ObjectId>? ServiceIds { get; set; }
     public string? Description { get; set; }
     public string? Identifier { get; set; }
     public MarkupEntity? Markup { get; set; }

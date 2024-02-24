@@ -44,7 +44,7 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// This enforces only certain cervices to show this option if null it's a global option
     /// </summary>
-    public List<ObjectId>? Services { get; set; }
+    public List<ObjectId>? ServiceIds { get; set; }
 
     /// <summary>
     /// Pricing tiers for the labor rate which can very based on the quantity of the rate type if I have specific pricing for different quantities
@@ -55,14 +55,14 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
     {
     }
     
-    public LaborRateEntity (string name, string? description, string? rateType, decimal cost, decimal price,List<ObjectId>? services, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
+    public LaborRateEntity (string name, string? description, string? rateType, decimal cost, decimal price,List<ObjectId>? serviceIds, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
     {
         Name = name;
         Description = description;
         RateType = rateType;
         Cost = cost;
         Price = price;
-        Services = services;
+        ServiceIds = serviceIds;
         PricingTiers = pricingTiers;
         UserOwnerId = userOwnerId;
         CreatedBy = createdBy;

@@ -12,7 +12,7 @@ type AdditionalServiceCostEntity {
   name: String!
   description: String
   cost: Decimal!
-  taxRate: TaxType
+  taxRate: TaxRateEntity
   taxRateId: ID
 }
 
@@ -31,20 +31,24 @@ type ImageEntity {
   modifiedBy: UUID
 }
 
-type LaborRateEntity {
-  id: ID!
+type LaborRateEntity implements Node {
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
+  id: ID!
   name: String!
   description: String
   rateType: String
   cost: Decimal!
   price: Decimal!
-  services: [ID!]
+  serviceIds: [ID!]
   pricingTiers: [PricingTierEntity!]
+  userOwnerId: UUID!
   createdAt: DateTime!
+  createdBy: UUID!
   modifiedAt: DateTime
+  modifiedBy: UUID
+  services: [ServiceEntity!]!
 }
 
 type MarkupEntity {
@@ -52,12 +56,12 @@ type MarkupEntity {
   value: Decimal!
 }
 
-type MaterialEntity {
+type MaterialEntity implements Node {
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
   id: ID!
-  services: [ID!]
+  serviceIds: [ID!]
   name: String!
   description: String
   identifier: String
@@ -73,6 +77,7 @@ type MaterialEntity {
   createdBy: UUID!
   modifiedAt: DateTime
   modifiedBy: UUID
+  services: [ServiceEntity!]!
 }
 
 type Mutation {
@@ -83,6 +88,18 @@ type Mutation {
   addMaterial(request: AddMaterialRequestInput!): MaterialEntity!
   addTaxRate(request: AddTaxRateRequestInput!): TaxRateEntity!
   addWarranty(request: AddWarrantyRequestInput!): WarrantyEntity!
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
 }
 
 type PricingTierEntity {
@@ -96,7 +113,8 @@ type Query {
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
-  serviceCategory(id: ID!): ServiceCategoryEntity
+  serviceCategories("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order_by: ServiceCategoryEntitySort where: ServiceCategoryEntityFilter): ServiceCategoriesConnection @authorize
+  service(id: ID!): ServiceEntity
 }
 
 type RangeOfDecimal {
@@ -110,11 +128,11 @@ type RangeTierUnitEntity {
   range: RangeOfDecimal!
 }
 
-type ServiceBundleEntity {
-  id: ID!
+type ServiceBundleEntity implements Node {
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
+  id: ID!
   serviceId: ID!
   name: String!
   unit: Decimal
@@ -136,21 +154,41 @@ type ServiceBundleEntity {
   warranties: [ID!]
   createdAt: DateTime!
   modifiedAt: DateTime
+  service: ServiceEntity
+}
+
+"A connection to a list of items."
+type ServiceCategoriesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ServiceCategoriesEdge!]
+  "A flattened list of the nodes."
+  nodes: [ServiceCategoryEntity!]
+}
+
+"An edge in a connection."
+type ServiceCategoriesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ServiceCategoryEntity!
 }
 
 type ServiceCategoryEntity implements Node {
-  id: ID!
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
-  parentServiceCategory: ID
+  id: ID!
+  parentServiceCategoryId: ID
   name: String!
   description: String
   images: [ImageEntity!]
-  serviceCategories: [ID!]
-  services: [ID!]
   createdAt: DateTime!
   modifiedAt: DateTime
+  parentServiceCategory: ServiceCategoryEntity
+  services: [ServiceEntity!]!
+  serviceCategories: [ServiceCategoryEntity!]!
 }
 
 type ServiceDurationEntity {
@@ -161,11 +199,11 @@ type ServiceDurationEntity {
   ranges: [RangeTierUnitEntity!]
 }
 
-type ServiceEntity {
-  id: ID!
+type ServiceEntity implements Node {
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
+  id: ID!
   name: String!
   unit: Decimal
   unitType: String
@@ -177,45 +215,48 @@ type ServiceEntity {
   description: String
   images: [ImageEntity!]
   allowOnlineBooking: Boolean!
-  serviceCategory: ID!
+  serviceCategory: ServiceCategoryEntity
   materials: [ServiceMaterialEntity!]
   laborRates: [ServiceLabourEntity!]
-  taxRateId: ID!
   markup: MarkupEntity
   additionalCosts: [AdditionalServiceCostEntity!]
-  warranties: [ID!]
-  bundles: [ID!]
+  warranties: [WarrantyEntity!]!
+  bundles: [ServiceBundleEntity!]!
   createdAt: DateTime!
   modifiedAt: DateTime
+  taxRate: TaxRateEntity
 }
 
 type ServiceLabourEntity {
-  labourRateId: ID!
   quantity: Decimal
   ratio: Decimal
   ranges: [RangeTierUnitEntity!]
+  laborRate: LaborRateEntity
 }
 
 type ServiceMaterialEntity {
-  materialId: ID!
   quantity: Decimal
   ratio: Decimal
   ranges: [RangeTierUnitEntity!]
+  material: MaterialEntity
 }
 
-type TaxRateEntity {
-  id: ID!
+type TaxRateEntity implements Node {
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
+  id: ID!
   name: String!
   description: String
   percentageRate: Decimal!
+  userOwnerId: UUID!
   createdAt: DateTime!
+  createdBy: UUID!
   modifiedAt: DateTime
+  modifiedBy: UUID
 }
 
-type UserEntity {
+type UserEntity implements Node {
   id: ID!
 }
 
@@ -224,11 +265,11 @@ type WarrantyDurationEntity {
   duration: Int!
 }
 
-type WarrantyEntity {
-  id: ID!
+type WarrantyEntity implements Node {
   owner: UserEntity!
   creator: UserEntity!
   modifier: UserEntity
+  id: ID!
   services: [ID!]
   name: String!
   warrantyType: String
@@ -236,8 +277,11 @@ type WarrantyEntity {
   terms: String!
   warrantyDuration: WarrantyDurationEntity!
   price: Decimal
+  userOwnerId: UUID!
   createdAt: DateTime!
+  createdBy: UUID!
   modifiedAt: DateTime
+  modifiedBy: UUID
 }
 
 input AddLaborRateRequestInput {
@@ -252,6 +296,7 @@ input AddLaborRateRequestInput {
 
 input AddMaterialRequestInput {
   name: String!
+  serviceIds: [ID!]
   description: String
   identifier: String
   markup: MarkupEntityInput
@@ -337,6 +382,121 @@ input AdditionalServiceCostRequestInput {
   taxRateId: ID
 }
 
+input ImageEntityFilter {
+  AND: [ImageEntityFilter!]
+  OR: [ImageEntityFilter!]
+  url: String
+  url_not: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  url_in: [String!]
+  url_not_in: [String!]
+  s3Key: String
+  s3Key_not: String
+  s3Key_contains: String
+  s3Key_not_contains: String
+  s3Key_starts_with: String
+  s3Key_not_starts_with: String
+  s3Key_ends_with: String
+  s3Key_not_ends_with: String
+  s3Key_in: [String!]
+  s3Key_not_in: [String!]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_in: [String!]
+  name_not_in: [String!]
+  byteSize: Long
+  byteSize_not: Long
+  byteSize_in: [Long]
+  byteSize_not_in: [Long]
+  byteSize_gt: Long
+  byteSize_not_gt: Long
+  byteSize_gte: Long
+  byteSize_not_gte: Long
+  byteSize_lt: Long
+  byteSize_not_lt: Long
+  byteSize_lte: Long
+  byteSize_not_lte: Long
+  contentType: String
+  contentType_not: String
+  contentType_contains: String
+  contentType_not_contains: String
+  contentType_starts_with: String
+  contentType_not_starts_with: String
+  contentType_ends_with: String
+  contentType_not_ends_with: String
+  contentType_in: [String]
+  contentType_not_in: [String]
+  description: String
+  description_not: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  description_in: [String]
+  description_not_in: [String]
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_gt: DateTime
+  createdAt_not_gt: DateTime
+  createdAt_gte: DateTime
+  createdAt_not_gte: DateTime
+  createdAt_lt: DateTime
+  createdAt_not_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_not_lte: DateTime
+  createdBy: UUID
+  createdBy_not: UUID
+  createdBy_in: [UUID!]
+  createdBy_not_in: [UUID!]
+  createdBy_gt: UUID
+  createdBy_not_gt: UUID
+  createdBy_gte: UUID
+  createdBy_not_gte: UUID
+  createdBy_lt: UUID
+  createdBy_not_lt: UUID
+  createdBy_lte: UUID
+  createdBy_not_lte: UUID
+  modifiedAt: DateTime
+  modifiedAt_not: DateTime
+  modifiedAt_in: [DateTime]
+  modifiedAt_not_in: [DateTime]
+  modifiedAt_gt: DateTime
+  modifiedAt_not_gt: DateTime
+  modifiedAt_gte: DateTime
+  modifiedAt_not_gte: DateTime
+  modifiedAt_lt: DateTime
+  modifiedAt_not_lt: DateTime
+  modifiedAt_lte: DateTime
+  modifiedAt_not_lte: DateTime
+  modifiedBy: UUID
+  modifiedBy_not: UUID
+  modifiedBy_in: [UUID]
+  modifiedBy_not_in: [UUID]
+  modifiedBy_gt: UUID
+  modifiedBy_not_gt: UUID
+  modifiedBy_gte: UUID
+  modifiedBy_not_gte: UUID
+  modifiedBy_lt: UUID
+  modifiedBy_not_lt: UUID
+  modifiedBy_lte: UUID
+  modifiedBy_not_lte: UUID
+}
+
 input MarkupEntityInput {
   type: MarkupType!
   value: Decimal!
@@ -345,6 +505,71 @@ input MarkupEntityInput {
 input MarkupRequestInput {
   type: MarkupType!
   value: Decimal!
+}
+
+input ObjectIdFilter {
+  AND: [ObjectIdFilter!]
+  OR: [ObjectIdFilter!]
+  timestamp: Int
+  timestamp_not: Int
+  timestamp_in: [Int!]
+  timestamp_not_in: [Int!]
+  timestamp_gt: Int
+  timestamp_not_gt: Int
+  timestamp_gte: Int
+  timestamp_not_gte: Int
+  timestamp_lt: Int
+  timestamp_not_lt: Int
+  timestamp_lte: Int
+  timestamp_not_lte: Int
+  machine: Int
+  machine_not: Int
+  machine_in: [Int!]
+  machine_not_in: [Int!]
+  machine_gt: Int
+  machine_not_gt: Int
+  machine_gte: Int
+  machine_not_gte: Int
+  machine_lt: Int
+  machine_not_lt: Int
+  machine_lte: Int
+  machine_not_lte: Int
+  pid: Short
+  pid_not: Short
+  pid_in: [Short!]
+  pid_not_in: [Short!]
+  pid_gt: Short
+  pid_not_gt: Short
+  pid_gte: Short
+  pid_not_gte: Short
+  pid_lt: Short
+  pid_not_lt: Short
+  pid_lte: Short
+  pid_not_lte: Short
+  increment: Int
+  increment_not: Int
+  increment_in: [Int!]
+  increment_not_in: [Int!]
+  increment_gt: Int
+  increment_not_gt: Int
+  increment_gte: Int
+  increment_not_gte: Int
+  increment_lt: Int
+  increment_not_lt: Int
+  increment_lte: Int
+  increment_not_lte: Int
+  creationTime: DateTime
+  creationTime_not: DateTime
+  creationTime_in: [DateTime!]
+  creationTime_not_in: [DateTime!]
+  creationTime_gt: DateTime
+  creationTime_not_gt: DateTime
+  creationTime_gte: DateTime
+  creationTime_not_gte: DateTime
+  creationTime_lt: DateTime
+  creationTime_not_lt: DateTime
+  creationTime_lte: DateTime
+  creationTime_not_lte: DateTime
 }
 
 input PricingTierEntityInput {
@@ -367,6 +592,113 @@ input RangeOfDecimalInput {
 input RangeTierUnitRequestInput {
   quantity: Decimal!
   range: RangeOfDecimalInput!
+}
+
+input ServiceCategoryEntityFilter {
+  AND: [ServiceCategoryEntityFilter!]
+  OR: [ServiceCategoryEntityFilter!]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_in: [String!]
+  name_not_in: [String!]
+  description: String
+  description_not: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  description_in: [String]
+  description_not_in: [String]
+  images_some: ImageEntityFilter
+  images_none: ImageEntityFilter
+  images_all: ImageEntityFilter
+  images_any: Boolean
+  serviceCategoryIds_some: ObjectIdFilter
+  serviceCategoryIds_none: ObjectIdFilter
+  serviceCategoryIds_all: ObjectIdFilter
+  serviceCategoryIds_any: Boolean
+  serviceIds_some: ObjectIdFilter
+  serviceIds_none: ObjectIdFilter
+  serviceIds_all: ObjectIdFilter
+  serviceIds_any: Boolean
+  userOwnerId: UUID
+  userOwnerId_not: UUID
+  userOwnerId_in: [UUID!]
+  userOwnerId_not_in: [UUID!]
+  userOwnerId_gt: UUID
+  userOwnerId_not_gt: UUID
+  userOwnerId_gte: UUID
+  userOwnerId_not_gte: UUID
+  userOwnerId_lt: UUID
+  userOwnerId_not_lt: UUID
+  userOwnerId_lte: UUID
+  userOwnerId_not_lte: UUID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_gt: DateTime
+  createdAt_not_gt: DateTime
+  createdAt_gte: DateTime
+  createdAt_not_gte: DateTime
+  createdAt_lt: DateTime
+  createdAt_not_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_not_lte: DateTime
+  createdBy: UUID
+  createdBy_not: UUID
+  createdBy_in: [UUID!]
+  createdBy_not_in: [UUID!]
+  createdBy_gt: UUID
+  createdBy_not_gt: UUID
+  createdBy_gte: UUID
+  createdBy_not_gte: UUID
+  createdBy_lt: UUID
+  createdBy_not_lt: UUID
+  createdBy_lte: UUID
+  createdBy_not_lte: UUID
+  modifiedAt: DateTime
+  modifiedAt_not: DateTime
+  modifiedAt_in: [DateTime]
+  modifiedAt_not_in: [DateTime]
+  modifiedAt_gt: DateTime
+  modifiedAt_not_gt: DateTime
+  modifiedAt_gte: DateTime
+  modifiedAt_not_gte: DateTime
+  modifiedAt_lt: DateTime
+  modifiedAt_not_lt: DateTime
+  modifiedAt_lte: DateTime
+  modifiedAt_not_lte: DateTime
+  modifiedBy: UUID
+  modifiedBy_not: UUID
+  modifiedBy_in: [UUID]
+  modifiedBy_not_in: [UUID]
+  modifiedBy_gt: UUID
+  modifiedBy_not_gt: UUID
+  modifiedBy_gte: UUID
+  modifiedBy_not_gte: UUID
+  modifiedBy_lt: UUID
+  modifiedBy_not_lt: UUID
+  modifiedBy_lte: UUID
+  modifiedBy_not_lte: UUID
+}
+
+input ServiceCategoryEntitySort {
+  name: SortOperationKind
+  description: SortOperationKind
+  userOwnerId: SortOperationKind
+  createdAt: SortOperationKind
+  createdBy: SortOperationKind
+  modifiedAt: SortOperationKind
+  modifiedBy: SortOperationKind
 }
 
 input ServiceDurationRequestInput {
@@ -420,6 +752,11 @@ enum ServiceCreationType {
   DYNAMIC
 }
 
+enum SortOperationKind {
+  ASC
+  DESC
+}
+
 enum TaxType {
   INCLUSIVE
   EXCEPT
@@ -434,6 +771,8 @@ enum WarrantyDurationType {
   LIFETIME
 }
 
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on OBJECT | FIELD_DEFINITION
+
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
 scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
 
@@ -442,6 +781,9 @@ scalar Decimal
 
 "The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
 scalar Long
+
+"The `Short` scalar type represents non-fractional signed whole 16-bit numeric values. Short can represent values between -(2^15) and 2^15 - 1."
+scalar Short
 
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
 

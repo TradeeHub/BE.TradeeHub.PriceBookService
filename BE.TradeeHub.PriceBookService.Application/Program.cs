@@ -1,5 +1,6 @@
 using BE.TradeeHub.PriceBookService.Application;
 using BE.TradeeHub.PriceBookService.Application.Extensions;
+using BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 using BE.TradeeHub.PriceBookService.Application.Interfaces;
 using BE.TradeeHub.PriceBookService.Application.Services;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
@@ -15,7 +16,11 @@ var appSettings = new AppSettings(builder.Configuration);
 builder.Services.AddSingleton<IAppSettings>(appSettings);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContext>();
+
+builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
+builder.Services.AddMongoDbCollections();
+
 builder.Services.AddScoped<IPriceBookService, PriceBookService>();
 builder.Services.AddScoped<IPriceBookRepository, PriceBookRepository>();
 builder.Services.AddAwsServices(builder.Configuration, appSettings);
@@ -32,6 +37,7 @@ builder.Services
     .AddTypeConverter<ObjectId, string>(o => o.ToString())
     .AddTypeConverter<string, ObjectId>(o => ObjectId.Parse(o))
     .AddType<UploadType>()
+    .AddDataLoader<IWarrantiesByIdDataLoader>()
     .AddMongoDbSorting()
     .AddMongoDbProjections()
     .AddMongoDbPagingProviders()

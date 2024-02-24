@@ -12,7 +12,7 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
 {
     [ID] [BsonId] public ObjectId Id { get; set; }
 
-    public ObjectId? ParentServiceCategory { get; set; }
+    public ObjectId? ParentServiceCategoryId { get; set; }
 
     /// <summary>
     /// The name of the service category
@@ -32,25 +32,25 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// Service categories that are sub-categories of this service category
     /// </summary>
-    public List<ObjectId>? ServiceCategories { get; set; }
+    public List<ObjectId>? ServiceCategoryIds { get; set; }
 
     /// <summary>
     /// Services that are part of this service category
     /// </summary>
-    public List<ObjectId>? Services { get; set; } // each service can have sub-services aka another ServiceEntity
+    public List<ObjectId>? ServiceIds { get; set; } // each service can have sub-services aka another ServiceEntity
 
     public ServiceCategoryEntity()
     {
     }
 
     public ServiceCategoryEntity(string name, string? description, Guid userOwnerId, Guid createdBy,
-        ObjectId? parentServiceCategory)
+        ObjectId? parentServiceCategoryId)
     {
         Name = name;
         Description = description;
         UserOwnerId = userOwnerId;
         CreatedBy = createdBy;
-        ParentServiceCategory = parentServiceCategory;
+        parentServiceCategoryId = parentServiceCategoryId;
         Images = new List<ImageEntity>();
         CreatedAt = DateTime.UtcNow;
     }
