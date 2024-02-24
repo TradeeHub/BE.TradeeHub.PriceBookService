@@ -116,6 +116,12 @@ type Query {
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
   serviceCategories("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order_by: ServiceCategoryEntitySort where: ServiceCategoryEntityFilter): ServiceCategoriesConnection @authorize
   service(id: ID!): ServiceEntity
+  serviceCategory(id: ID!): ServiceCategoryEntity
+  laborRate(id: ID!): LaborRateEntity
+  serviceBundle(id: ID!): ServiceBundleEntity
+  material(id: ID!): MaterialEntity
+  warranty(id: ID!): WarrantyEntity
+  taxRate(id: ID!): TaxRateEntity
 }
 
 type RangeOfDecimal {
@@ -152,6 +158,7 @@ type ServiceBundleEntity implements Node {
   markup: MarkupEntity
   additionalCosts: [AdditionalServiceCostEntity!]
   warrantyIds: [ID!]
+  userOwnerId: UUID!
   createdAt: DateTime!
   createdById: UUID!
   modifiedAt: DateTime

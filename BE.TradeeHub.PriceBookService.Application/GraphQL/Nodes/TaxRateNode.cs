@@ -1,5 +1,4 @@
-﻿using BE.TradeeHub.PriceBookService.Application.Extensions;
-using BE.TradeeHub.PriceBookService.Domain.Entities;
+﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -19,12 +18,5 @@ public static class TaxRateNode
         var taxRateList = await taxRates.Find(filter).ToListAsync(cancellationToken);
 
         return taxRateList.ToLookup(taxRate => taxRate.Id);
-    }
-    
-    [NodeResolver]
-    public static async Task<TaxRateEntity?> GetTaxRate([Service] IMongoCollection<TaxRateEntity?> collection,
-        [Service] UserContext userContext, ObjectId id, CancellationToken ctx)
-    {
-        return await EntityFetcher.GetEntityByIdAndOwnerId(collection, id, userContext.UserId, ctx);
     }
 }   

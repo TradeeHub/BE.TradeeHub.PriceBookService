@@ -1,10 +1,6 @@
-﻿using Amazon.S3;
-using BE.TradeeHub.PriceBookService.Application.Interfaces;
+﻿using BE.TradeeHub.PriceBookService.Application.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
-using BE.TradeeHub.PriceBookService.Domain.Interfaces;
-using Amazon.S3.Model;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
-using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using BE.TradeeHub.PriceBookService.Domain.Requests;
 
 namespace BE.TradeeHub.PriceBookService.Application.Services;
@@ -13,15 +9,16 @@ public class PriceBookService : IPriceBookService
 {
     private readonly IPriceBookRepository _priceBookRepository;
     private readonly IImageRepository _imageRepository;
-    
+
     public PriceBookService(IImageRepository imageRepository, IPriceBookRepository priceBookRepository)
     {
         _imageRepository = imageRepository;
         _priceBookRepository = priceBookRepository;
     }
 
-    public async Task<ServiceCategoryEntity> AddNewServiceCategoryAsync(UserContext userContext,
-        AddNewServiceCategoryRequest request, CancellationToken ctx)
+    public async Task<ServiceCategoryEntity>
+        AddNewServiceCategoryAsync(UserContext userContext,
+            AddNewServiceCategoryRequest request, CancellationToken ctx)
     {
         var newServiceCategory = new ServiceCategoryEntity(request, userContext);
 
@@ -29,7 +26,8 @@ public class PriceBookService : IPriceBookService
             return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
 
         var uploadTasks = request.Images
-            .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "service-category", ctx)).ToList();
+            .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "service-category", ctx))
+            .ToList();
         var images = await Task.WhenAll(uploadTasks);
 
         foreach (var image in images)
@@ -56,7 +54,8 @@ public class PriceBookService : IPriceBookService
         if (request.Images == null || !request.Images.Any())
             return await _priceBookRepository.CreateService(serviceEntity, ctx);
 
-        var uploadTasks = request.Images.Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "services", ctx))
+        var uploadTasks = request.Images
+            .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "services", ctx))
             .ToList();
         var images = await Task.WhenAll(uploadTasks);
 
@@ -84,7 +83,8 @@ public class PriceBookService : IPriceBookService
         if (request.Images == null || !request.Images.Any())
             return await _priceBookRepository.CreateMaterial(materialEntity, ctx);
 
-        var uploadTasks = request.Images.Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "materials", ctx))
+        var uploadTasks = request.Images
+            .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "materials", ctx))
             .ToList();
         var images = await Task.WhenAll(uploadTasks);
 

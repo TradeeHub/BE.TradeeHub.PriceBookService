@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Results\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="HotChocolate" Version="13.9.0" />
       <PackageReference Include="HotChocolate.Types.Scalars.Upload" Version="13.9.0" />
       <PackageReference Include="MongoDB.Bson" Version="2.24.0" />

@@ -3,7 +3,6 @@ using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 
-
 [ExtendObjectType(typeof(ServiceMaterialEntity), IgnoreProperties = ["MaterialId"])]
 public static class ServiceMaterialNode
 {
