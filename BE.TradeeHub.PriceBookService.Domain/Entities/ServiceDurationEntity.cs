@@ -1,5 +1,4 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
-using MongoDB.Driver.Core.Misc;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 

@@ -45,9 +45,9 @@ type LaborRateEntity implements Node {
   pricingTiers: [PricingTierEntity!]
   userOwnerId: UUID!
   createdAt: DateTime!
-  createdBy: UUID!
+  createdById: UUID!
   modifiedAt: DateTime
-  modifiedBy: UUID
+  modifiedById: UUID
   services: [ServiceEntity!]!
 }
 
@@ -74,9 +74,9 @@ type MaterialEntity implements Node {
   pricingTiers: [PricingTierEntity!]
   userOwnerId: UUID!
   createdAt: DateTime!
-  createdBy: UUID!
+  createdById: UUID!
   modifiedAt: DateTime
-  modifiedBy: UUID
+  modifiedById: UUID
   services: [ServiceEntity!]!
 }
 
@@ -145,16 +145,20 @@ type ServiceBundleEntity implements Node {
   description: String
   images: [ImageEntity!]
   allowOnlineBooking: Boolean!
-  serviceCategory: ID!
+  serviceCategoryId: ID!
   materials: [ServiceMaterialEntity!]
   laborRates: [ServiceLabourEntity!]
-  taxRate: ID!
   markup: MarkupEntity
   additionalCosts: [AdditionalServiceCostEntity!]
-  warranties: [ID!]
+  warrantyIds: [ID!]
   createdAt: DateTime!
+  createdById: UUID!
   modifiedAt: DateTime
+  modifiedById: UUID
   service: ServiceEntity
+  warranties: [WarrantyEntity!]!
+  taxRate: TaxRateEntity
+  serviceCategory: ServiceCategoryEntity
 }
 
 "A connection to a list of items."
@@ -185,7 +189,9 @@ type ServiceCategoryEntity implements Node {
   description: String
   images: [ImageEntity!]
   createdAt: DateTime!
+  createdById: UUID!
   modifiedAt: DateTime
+  modifiedById: UUID
   parentServiceCategory: ServiceCategoryEntity
   services: [ServiceEntity!]!
   serviceCategories: [ServiceCategoryEntity!]!
@@ -215,16 +221,18 @@ type ServiceEntity implements Node {
   description: String
   images: [ImageEntity!]
   allowOnlineBooking: Boolean!
-  serviceCategory: ServiceCategoryEntity
   materials: [ServiceMaterialEntity!]
   laborRates: [ServiceLabourEntity!]
   markup: MarkupEntity
   additionalCosts: [AdditionalServiceCostEntity!]
+  createdAt: DateTime!
+  createdById: UUID!
+  modifiedAt: DateTime
+  modifiedById: UUID
   warranties: [WarrantyEntity!]!
   bundles: [ServiceBundleEntity!]!
-  createdAt: DateTime!
-  modifiedAt: DateTime
   taxRate: TaxRateEntity
+  serviceCategory: ServiceCategoryEntity
 }
 
 type ServiceLabourEntity {
@@ -251,9 +259,9 @@ type TaxRateEntity implements Node {
   percentageRate: Decimal!
   userOwnerId: UUID!
   createdAt: DateTime!
-  createdBy: UUID!
+  createdById: UUID!
   modifiedAt: DateTime
-  modifiedBy: UUID
+  modifiedById: UUID
 }
 
 type UserEntity implements Node {
@@ -270,7 +278,7 @@ type WarrantyEntity implements Node {
   creator: UserEntity!
   modifier: UserEntity
   id: ID!
-  services: [ID!]
+  serviceIds: [ID!]
   name: String!
   warrantyType: String
   description: String
@@ -279,9 +287,9 @@ type WarrantyEntity implements Node {
   price: Decimal
   userOwnerId: UUID!
   createdAt: DateTime!
-  createdBy: UUID!
+  createdById: UUID!
   modifiedAt: DateTime
-  modifiedBy: UUID
+  modifiedById: UUID
 }
 
 input AddLaborRateRequestInput {
@@ -653,18 +661,18 @@ input ServiceCategoryEntityFilter {
   createdAt_not_lt: DateTime
   createdAt_lte: DateTime
   createdAt_not_lte: DateTime
-  createdBy: UUID
-  createdBy_not: UUID
-  createdBy_in: [UUID!]
-  createdBy_not_in: [UUID!]
-  createdBy_gt: UUID
-  createdBy_not_gt: UUID
-  createdBy_gte: UUID
-  createdBy_not_gte: UUID
-  createdBy_lt: UUID
-  createdBy_not_lt: UUID
-  createdBy_lte: UUID
-  createdBy_not_lte: UUID
+  createdById: UUID
+  createdById_not: UUID
+  createdById_in: [UUID!]
+  createdById_not_in: [UUID!]
+  createdById_gt: UUID
+  createdById_not_gt: UUID
+  createdById_gte: UUID
+  createdById_not_gte: UUID
+  createdById_lt: UUID
+  createdById_not_lt: UUID
+  createdById_lte: UUID
+  createdById_not_lte: UUID
   modifiedAt: DateTime
   modifiedAt_not: DateTime
   modifiedAt_in: [DateTime]
@@ -677,18 +685,18 @@ input ServiceCategoryEntityFilter {
   modifiedAt_not_lt: DateTime
   modifiedAt_lte: DateTime
   modifiedAt_not_lte: DateTime
-  modifiedBy: UUID
-  modifiedBy_not: UUID
-  modifiedBy_in: [UUID]
-  modifiedBy_not_in: [UUID]
-  modifiedBy_gt: UUID
-  modifiedBy_not_gt: UUID
-  modifiedBy_gte: UUID
-  modifiedBy_not_gte: UUID
-  modifiedBy_lt: UUID
-  modifiedBy_not_lt: UUID
-  modifiedBy_lte: UUID
-  modifiedBy_not_lte: UUID
+  modifiedById: UUID
+  modifiedById_not: UUID
+  modifiedById_in: [UUID]
+  modifiedById_not_in: [UUID]
+  modifiedById_gt: UUID
+  modifiedById_not_gt: UUID
+  modifiedById_gte: UUID
+  modifiedById_not_gte: UUID
+  modifiedById_lt: UUID
+  modifiedById_not_lt: UUID
+  modifiedById_lte: UUID
+  modifiedById_not_lte: UUID
 }
 
 input ServiceCategoryEntitySort {
@@ -696,9 +704,9 @@ input ServiceCategoryEntitySort {
   description: SortOperationKind
   userOwnerId: SortOperationKind
   createdAt: SortOperationKind
-  createdBy: SortOperationKind
+  createdById: SortOperationKind
   modifiedAt: SortOperationKind
-  modifiedBy: SortOperationKind
+  modifiedById: SortOperationKind
 }
 
 input ServiceDurationRequestInput {

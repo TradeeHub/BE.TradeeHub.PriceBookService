@@ -1,6 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
-using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -14,7 +13,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// </summary>
 public class ServiceEntity : AuditableEntity, IOwnedEntity
 {
-    [ID] [BsonId] public ObjectId Id { get; set; }
+    [BsonId] public ObjectId Id { get; set; }
 
     /// <summary>
     /// The name of the service
@@ -80,7 +79,7 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// The category of which the service belongs to will mapped to the ServiceCategoryEntity via graphql
     /// </summary>
-    public ObjectId ServiceCategory { get; set; }
+    public ObjectId ServiceCategoryId { get; set; }
 
     /// <summary>
     /// All materials that could be used in the service
@@ -95,7 +94,7 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// The tax rate id that will map to the TaxRateEntity via graphql
     /// </summary>
-    public ObjectId TaxRateId { get; set; }
+    public ObjectId? TaxRateId { get; set; }
 
     /// <summary>
     /// The markup that will be applied to the service if any
@@ -110,12 +109,12 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// Warranties that can be applied to the service
     /// </summary>
-    public List<ObjectId>? Warranties { get; set; }
+    public List<ObjectId>? WarrantyIds { get; set; }
 
     /// <summary>
     /// The Service bundles that can be applied to the service
     /// </summary>
-    public List<ObjectId>? Bundles { get; set; }
+    public List<ObjectId>? BundleIds { get; set; }
 
     public ServiceEntity()
     {
@@ -123,11 +122,11 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
 
     public ServiceEntity(string name, decimal? unit, string? unitType, ServiceCreationType serviceCreationType,
         bool useCalculatedPrice, ServiceDurationEntity? duration, decimal cost, decimal price, string? description,
-        bool allowOnlineBooking, ObjectId serviceCategory, List<ServiceMaterialEntity>? materials,
-        List<ServiceLabourEntity>? laborRates, ObjectId taxRateId, MarkupEntity? markup,
+        bool allowOnlineBooking, ObjectId serviceCategoryId, List<ServiceMaterialEntity>? materials,
+        List<ServiceLabourEntity>? laborRates, ObjectId? taxRateId, MarkupEntity? markup,
         List<AdditionalServiceCostEntity>? additionalCosts,
-        List<ObjectId>? warranties,
-        Guid userOwnerId, Guid createdBy)
+        List<ObjectId>? warrantyIds,
+        Guid userOwnerId, Guid createdById)
     {
         Name = name;
         Unit = unit;
@@ -140,16 +139,16 @@ public class ServiceEntity : AuditableEntity, IOwnedEntity
         Description = description;
         Images = new List<ImageEntity>();
         AllowOnlineBooking = allowOnlineBooking;
-        ServiceCategory = serviceCategory;
+        ServiceCategoryId = serviceCategoryId;
         Materials = materials;
         LaborRates = laborRates;
         TaxRateId = taxRateId;
         Markup = markup;
         AdditionalCosts = additionalCosts;
-        Warranties = warranties;
-        Bundles = null;
+        WarrantyIds = warrantyIds;
+        BundleIds = null;
         UserOwnerId = userOwnerId;
-        CreatedBy = createdBy;
+        CreatedById = createdById;
         CreatedAt = DateTime.UtcNow;
     }
 }

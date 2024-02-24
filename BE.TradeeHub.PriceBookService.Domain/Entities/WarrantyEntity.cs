@@ -15,7 +15,7 @@ public class WarrantyEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// The services that the warranty can be applied to if empty then the warranty can be applied to all services
     /// </summary>
-    public List<ObjectId>? Services { get; set; }
+    public List<ObjectId>? ServiceIds { get; set; }
 
     /// <summary>
     /// The name of the warranty
@@ -51,14 +51,17 @@ public class WarrantyEntity : AuditableEntity, IOwnedEntity
     {
     }
     
-    public WarrantyEntity (List<ObjectId>? services, string name, string? warrantyType, string? description, string terms, WarrantyDurationEntity warrantyDuration, decimal? price, Guid userOwnerId, Guid createdBy)
+    public WarrantyEntity (List<ObjectId>? serviceIds, string name, string? warrantyType, string? description, string terms, WarrantyDurationEntity warrantyDuration, decimal? price, Guid userOwnerId, Guid createdBy)
     {
-        Services = services;
+        ServiceIds = serviceIds;
         Name = name;
         WarrantyType = warrantyType;
         Description = description;
         Terms = terms;
         WarrantyDuration = warrantyDuration;
         Price = price;
+        UserOwnerId = userOwnerId;
+        createdBy = createdBy;
+        CreatedAt = DateTime.UtcNow;
     }
 }

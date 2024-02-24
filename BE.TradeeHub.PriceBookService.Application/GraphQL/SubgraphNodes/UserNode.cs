@@ -1,6 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.SubgraphEntities;
 
-namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
+namespace BE.TradeeHub.PriceBookService.Application.GraphQL.SubgraphNodes;
 
 [Node]
 [ExtendObjectType(typeof(UserEntity))]

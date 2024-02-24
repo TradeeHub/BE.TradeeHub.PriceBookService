@@ -11,53 +11,53 @@ public static class ServiceBundleNode
     public static async Task<ServiceEntity?> GetService([Parent] ServiceBundleEntity service,
         IServicesGroupedByIdDataLoader servicesGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (service.ServiceCategory == ObjectId.Empty)
+        if (service.ServiceCategoryId == ObjectId.Empty)
         {
             return null;
         }
 
-        var services = await servicesGroupedByIdDataLoader.LoadAsync(service.ServiceCategory, ctx);
+        var services = await servicesGroupedByIdDataLoader.LoadAsync(service.ServiceCategoryId, ctx);
 
         return services.FirstOrDefault();
     }
     
-    public static async Task<List<WarrantyEntity>> GetWarranties([Parent] ServiceEntity service,
+    public static async Task<List<WarrantyEntity>> GetWarranties([Parent] ServiceBundleEntity service,
         IWarrantiesGroupedByIdDataLoader warrantyByIdDataLoader, CancellationToken ctx)
     {
-        if (service.Warranties == null || service.Warranties.Count == 0)
+        if (service.WarrantyIds == null || service.WarrantyIds.Count == 0)
         {
             return [];
         }
 
-        var warrantyGroups = await warrantyByIdDataLoader.LoadAsync(service.Warranties, ctx);
+        var warrantyGroups = await warrantyByIdDataLoader.LoadAsync(service.WarrantyIds, ctx);
 
         var warranties = warrantyGroups.SelectMany(group => group).ToList();
 
         return warranties;
     }
 
-    public static async Task<TaxRateEntity?> GetTaxRate([Parent] ServiceEntity service,
+    public static async Task<TaxRateEntity?> GetTaxRate([Parent] ServiceBundleEntity service,
         ITaxRateGroupedByIdDataLoader taxRateByIdDataLoader, CancellationToken ctx)
     {
-        if (service.TaxRateId == ObjectId.Empty)
+        if (service.TaxRateId == null || service.TaxRateId == ObjectId.Empty)
         {
             return null;
         }
 
-        var taxRate = await taxRateByIdDataLoader.LoadAsync(service.TaxRateId, ctx);
+        var taxRate = await taxRateByIdDataLoader.LoadAsync(service.TaxRateId.Value, ctx);
 
         return taxRate.FirstOrDefault();
     }
 
-    public static async Task<ServiceCategoryEntity?> GetServiceCategory([Parent] ServiceEntity service,
+    public static async Task<ServiceCategoryEntity?> GetServiceCategory([Parent] ServiceBundleEntity service,
         IServiceCategoryGroupedByIdDataLoader serviceCategoryGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (service.ServiceCategory == ObjectId.Empty)
+        if (service.ServiceCategoryId == ObjectId.Empty)
         {
             return null;
         }
 
-        var serviceCategory = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ServiceCategory, ctx);
+        var serviceCategory = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ServiceCategoryId, ctx);
 
         return serviceCategory.FirstOrDefault();
     }

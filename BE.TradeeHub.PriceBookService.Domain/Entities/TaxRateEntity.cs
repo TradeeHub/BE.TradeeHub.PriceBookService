@@ -31,13 +31,13 @@ public class TaxRateEntity : AuditableEntity, IOwnedEntity
     {
         
     }
-    public TaxRateEntity (string name, string? description, decimal percentageRate, Guid userOwnerId, Guid createdBy)
+    public TaxRateEntity (string name, string? description, decimal percentageRate, Guid userOwnerId, Guid createdById)
     {
         Name = name;
         Description = description;
         PercentageRate = percentageRate;
         UserOwnerId = userOwnerId;
-        CreatedBy = createdBy;
+        CreatedById = createdById;
         CreatedAt = DateTime.UtcNow;
     }
 }

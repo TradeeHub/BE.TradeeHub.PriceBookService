@@ -13,7 +13,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// </summary>
 public class LaborRateEntity : AuditableEntity, IOwnedEntity
 {
-    [ID] [BsonId] public ObjectId Id { get; set; }
+    [BsonId] public ObjectId Id { get; set; }
 
     /// <summary>
     /// Labor rate name
@@ -55,7 +55,7 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
     {
     }
     
-    public LaborRateEntity (string name, string? description, string? rateType, decimal cost, decimal price,List<ObjectId>? serviceIds, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
+    public LaborRateEntity (string name, string? description, string? rateType, decimal cost, decimal price,List<ObjectId>? serviceIds, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdById)
     {
         Name = name;
         Description = description;
@@ -65,7 +65,7 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
         ServiceIds = serviceIds;
         PricingTiers = pricingTiers;
         UserOwnerId = userOwnerId;
-        CreatedBy = createdBy;
+        CreatedById = createdById;
         CreatedAt = DateTime.UtcNow;
     }
 }

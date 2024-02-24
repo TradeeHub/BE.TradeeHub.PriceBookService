@@ -20,7 +20,7 @@ public abstract class AuditableEntity
     /// <summary>
     /// CreatedBy is the unique identifier of the User who created the entity.
     /// </summary>
-    public Guid CreatedBy { get; set; }
+    public Guid CreatedById { get; set; }
 
     /// <summary>
     /// ModifiedAt is the date and time when the entity was last modified.
@@ -32,7 +32,7 @@ public abstract class AuditableEntity
     /// ModifiedBy is the unique identifier of the User who last modified the entity.
     /// If the entity has never been modified, it is null.
     /// </summary>
-    public Guid? ModifiedBy { get; set; }
+    public Guid? ModifiedById { get; set; }
 
     /// <summary>
     /// GraphQL Relay ID of the Owner that will be used to expose the entity to the GraphQL API.
@@ -44,11 +44,11 @@ public abstract class AuditableEntity
     /// GraphQL Relay ID of the Creator that will be used to expose the entity to the GraphQL API.
     /// </summary>
     /// <returns></returns>
-    public UserEntity Creator() => new() { Id = CreatedBy };
+    public UserEntity Creator() => new() { Id = CreatedById };
 
     /// <summary>
     /// GraphQL Relay ID of the Modifier that will be used to expose the entity to the GraphQL API.
     /// </summary>
     /// <returns></returns>
-    public UserEntity? Modifier() => ModifiedBy.HasValue ? new UserEntity { Id = ModifiedBy.Value } : null;
+    public UserEntity? Modifier() => ModifiedById.HasValue ? new UserEntity { Id = ModifiedById.Value } : null;
 }

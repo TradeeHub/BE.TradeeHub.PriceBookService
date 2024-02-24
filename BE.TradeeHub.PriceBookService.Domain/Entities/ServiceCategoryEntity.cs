@@ -1,5 +1,4 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
-using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -10,7 +9,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// </summary>
 public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
 {
-    [ID] [BsonId] public ObjectId Id { get; set; }
+    [BsonId] public ObjectId Id { get; set; }
 
     public ObjectId? ParentServiceCategoryId { get; set; }
 
@@ -43,14 +42,14 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
     {
     }
 
-    public ServiceCategoryEntity(string name, string? description, Guid userOwnerId, Guid createdBy,
+    public ServiceCategoryEntity(string name, string? description, Guid userOwnerId, Guid createdById,
         ObjectId? parentServiceCategoryId)
     {
         Name = name;
         Description = description;
         UserOwnerId = userOwnerId;
-        CreatedBy = createdBy;
-        parentServiceCategoryId = parentServiceCategoryId;
+        CreatedById = createdById;
+        ParentServiceCategoryId = parentServiceCategoryId;
         Images = new List<ImageEntity>();
         CreatedAt = DateTime.UtcNow;
     }

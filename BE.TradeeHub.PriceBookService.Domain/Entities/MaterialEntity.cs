@@ -72,7 +72,7 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
 
     public MaterialEntity(string name, List<ObjectId>? serviceIds, string? description, string? identifier,
         MarkupEntity? markup, decimal cost, decimal price, string unitType, List<string>? onlineMaterialUrls,
-        List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdBy)
+        List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdById)
     {
         Name = name;
         ServiceIds = serviceIds;
@@ -86,7 +86,7 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
         OnlineMaterialUrls = onlineMaterialUrls;
         PricingTiers = pricingTiers;
         UserOwnerId = userOwnerId;
-        CreatedBy = createdBy;
+        CreatedById = createdById;
         CreatedAt = DateTime.UtcNow;
     }
 }

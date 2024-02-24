@@ -4,18 +4,19 @@ using MongoDB.Driver;
 
 namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 
-[ExtendObjectType(typeof(ServiceEntity), IgnoreProperties = ["UserOwnerId", "CreatedBy", "ModifiedBy", "TaxRateId"])]
+[Node]
+[ExtendObjectType(typeof(ServiceEntity), IgnoreProperties = ["UserOwnerId", "CreatedBy", "ModifiedBy", "TaxRateId", "WarrantyIds", "BundleIds", "ServiceCategoryId"])]
 public static class ServiceNode
 {
     public static async Task<List<WarrantyEntity>> GetWarranties([Parent] ServiceEntity service,
         IWarrantiesGroupedByIdDataLoader warrantyByIdDataLoader, CancellationToken ctx)
     {
-        if (service.Warranties == null || service.Warranties.Count == 0)
+        if (service.WarrantyIds == null || service.WarrantyIds.Count == 0)
         {
             return [];
         }
 
-        var warrantyGroups = await warrantyByIdDataLoader.LoadAsync(service.Warranties, ctx);
+        var warrantyGroups = await warrantyByIdDataLoader.LoadAsync(service.WarrantyIds, ctx);
 
         var warranties = warrantyGroups.SelectMany(group => group).ToList();
 
@@ -25,12 +26,12 @@ public static class ServiceNode
     public static async Task<List<ServiceBundleEntity>> GetBundles([Parent] ServiceEntity service,
         IServiceBundleGroupedByIdDataLoader serviceBundleGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (service.Bundles == null || service.Bundles.Count == 0)
+        if (service.BundleIds == null || service.BundleIds.Count == 0)
         {
             return [];
         }
 
-        var serviceBundleGroups = await serviceBundleGroupedByIdDataLoader.LoadAsync(service.Bundles, ctx);
+        var serviceBundleGroups = await serviceBundleGroupedByIdDataLoader.LoadAsync(service.BundleIds, ctx);
 
         var bundles = serviceBundleGroups.SelectMany(group => group).ToList();
 
@@ -40,12 +41,12 @@ public static class ServiceNode
     public static async Task<TaxRateEntity?> GetTaxRate([Parent] ServiceEntity service,
         ITaxRateGroupedByIdDataLoader taxRateByIdDataLoader, CancellationToken ctx)
     {
-        if (service.TaxRateId == ObjectId.Empty)
+        if (service.TaxRateId == null || service.TaxRateId == ObjectId.Empty)
         {
             return null;
         }
 
-        var taxRate = await taxRateByIdDataLoader.LoadAsync(service.TaxRateId, ctx);
+        var taxRate = await taxRateByIdDataLoader.LoadAsync(service.TaxRateId.Value, ctx);
 
         return taxRate.FirstOrDefault();
     }
@@ -53,12 +54,12 @@ public static class ServiceNode
     public static async Task<ServiceCategoryEntity?> GetServiceCategory([Parent] ServiceEntity service,
         IServiceCategoryGroupedByIdDataLoader serviceCategoryGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (service.ServiceCategory == ObjectId.Empty)
+        if (service.ServiceCategoryId == ObjectId.Empty)
         {
             return null;
         }
 
-        var serviceCategory = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ServiceCategory, ctx);
+        var serviceCategory = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ServiceCategoryId, ctx);
 
         return serviceCategory.FirstOrDefault();
     }
