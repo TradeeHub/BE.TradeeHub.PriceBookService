@@ -158,7 +158,6 @@ type ServiceBundleEntity implements Node {
   markup: MarkupEntity
   additionalCosts: [AdditionalServiceCostEntity!]
   warrantyIds: [ID!]
-  userOwnerId: UUID!
   createdAt: DateTime!
   createdById: UUID!
   modifiedAt: DateTime
@@ -197,9 +196,7 @@ type ServiceCategoryEntity implements Node {
   description: String
   images: [ImageEntity!]
   createdAt: DateTime!
-  createdById: UUID!
   modifiedAt: DateTime
-  modifiedById: UUID
   parentServiceCategory: ServiceCategoryEntity
   services: [ServiceEntity!]!
   serviceCategories: [ServiceCategoryEntity!]!
