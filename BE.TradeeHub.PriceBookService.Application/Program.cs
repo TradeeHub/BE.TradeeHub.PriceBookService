@@ -23,6 +23,7 @@ builder.Services.AddMongoDbCollections();
 
 builder.Services.AddScoped<IPriceBookService, PriceBookService>();
 builder.Services.AddScoped<IPriceBookRepository, PriceBookRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddAwsServices(builder.Configuration, appSettings);
 
 builder.Services.AddCors(appSettings).AddAuth(appSettings);

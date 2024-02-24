@@ -2,7 +2,7 @@
 
 namespace BE.TradeeHub.PriceBookService.Domain.Enums;
 
-public enum TaxType
+public enum TaxRateType
 {
     [Description("Inclusive of Tax")]
     Inclusive,

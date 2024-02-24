@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 
@@ -38,12 +39,12 @@ public class ServiceDurationEntity
     {
     }
 
-    public ServiceDurationEntity(DurationType type, decimal durationRangeFrom, decimal? durationRangeTo, decimal? ratio, List<RangeTierUnitEntity>? ranges)
+    public ServiceDurationEntity(IServiceDurationRequest addRequest)
     {
-        Type = type;
-        DurationRangeFrom = durationRangeFrom;
-        DurationRangeTo = durationRangeTo;
-        Ratio = ratio;
-        Ranges = ranges;
+        Type = addRequest.Type;
+        DurationRangeFrom = addRequest.DurationRangeFrom;
+        DurationRangeTo = addRequest.DurationRangeTo;
+        Ratio = addRequest.Ratio;
+        Ranges = addRequest.Ranges?.Select(x => new RangeTierUnitEntity(x.Quantity, x.Range)).ToList();
     }
 }

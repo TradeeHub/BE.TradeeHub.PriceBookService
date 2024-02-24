@@ -1,9 +1,11 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
+using HotChocolate.Types;
 using MongoDB.Bson;
 
-namespace BE.TradeeHub.PriceBookService.Application.Requests;
+namespace BE.TradeeHub.PriceBookService.Domain.Requests;
 
-public class AddServiceRequest
+public class AddServiceRequest : IAddServiceRequest
 {
     public required string Name { get; set; }
     public decimal? Unit { get; set; }
@@ -16,11 +18,11 @@ public class AddServiceRequest
     public string? Description { get; set; }
     public IEnumerable<IFile>? Images { get; set; }
     public bool AllowOnlineBooking { get; set; }
-    public ObjectId ServiceCategory { get; set; }
-    public List<ServiceMaterialRequest>? Materials { get; set; } = [];
-    public List<ServiceLabourRequest>? LaborRates { get; set; } = [];
+    public ObjectId ServiceCategoryId { get; set; }
+    public IEnumerable<ServiceMaterialRequest>? Materials { get; set; } = [];
+    public IEnumerable<ServiceLabourRequest>? LaborRates { get; set; } = [];
     public ObjectId TaxRateId { get; set; }
     public MarkupRequest? Markup { get; set; }
-    public List<AdditionalServiceCostRequest>? AdditionalCosts { get; set; }
-    public List<ObjectId>? Warranties { get; set; }
+    public IEnumerable<AdditionalServiceCostRequest>? AdditionalCosts { get; set; }
+    public IEnumerable<ObjectId>? WarrantyIds { get; set; }
 }

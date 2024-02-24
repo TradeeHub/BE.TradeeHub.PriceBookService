@@ -12,8 +12,9 @@ type AdditionalServiceCostEntity {
   name: String!
   description: String
   cost: Decimal!
-  taxRate: TaxRateEntity
+  taxRateType: TaxRateType
   taxRateId: ID
+  taxRate: TaxRateEntity
 }
 
 type ImageEntity {
@@ -298,7 +299,7 @@ input AddLaborRateRequestInput {
   rateType: String
   cost: Decimal!
   price: Decimal!
-  services: [ID!]
+  serviceIds: [ID!]
   pricingTiers: [PricingTierRequestInput!]
 }
 
@@ -317,7 +318,7 @@ input AddMaterialRequestInput {
 }
 
 input AddNewServiceCategoryRequestInput {
-  parentServiceCategory: ID
+  parentServiceCategoryId: ID
   name: String!
   description: String
   images: [Upload!]
@@ -336,13 +337,13 @@ input AddServiceBundleRequestInput {
   description: String
   images: [Upload!]
   allowOnlineBooking: Boolean!
-  serviceCategory: ID!
+  serviceCategoryId: ID!
   materials: [ServiceMaterialRequestInput!]
   laborRates: [ServiceLabourRequestInput!]
   taxRateId: ID!
   markup: MarkupRequestInput
   additionalCosts: [AdditionalServiceCostRequestInput!]
-  warranties: [ID!]
+  warrantyIds: [ID!]
 }
 
 input AddServiceRequestInput {
@@ -357,13 +358,13 @@ input AddServiceRequestInput {
   description: String
   images: [Upload!]
   allowOnlineBooking: Boolean!
-  serviceCategory: ID!
+  serviceCategoryId: ID!
   materials: [ServiceMaterialRequestInput!]
   laborRates: [ServiceLabourRequestInput!]
   taxRateId: ID!
   markup: MarkupRequestInput
   additionalCosts: [AdditionalServiceCostRequestInput!]
-  warranties: [ID!]
+  warrantyIds: [ID!]
 }
 
 input AddTaxRateRequestInput {
@@ -373,12 +374,12 @@ input AddTaxRateRequestInput {
 }
 
 input AddWarrantyRequestInput {
-  services: [ID!]
+  serviceIds: [ID!]
   name: String!
   warrantyType: String
   description: String
   terms: String!
-  warrantyDuration: WarrantyDurationEntityInput!
+  warrantyDuration: WarrantyDurationRequestInput!
   price: Decimal
 }
 
@@ -386,7 +387,7 @@ input AdditionalServiceCostRequestInput {
   name: String!
   description: String
   cost: Decimal!
-  taxRate: TaxType
+  taxRateType: TaxRateType
   taxRateId: ID
 }
 
@@ -731,7 +732,7 @@ input ServiceMaterialRequestInput {
   ranges: [RangeTierUnitRequestInput!]
 }
 
-input WarrantyDurationEntityInput {
+input WarrantyDurationRequestInput {
   durationType: WarrantyDurationType!
   duration: Int!
 }
@@ -765,7 +766,7 @@ enum SortOperationKind {
   DESC
 }
 
-enum TaxType {
+enum TaxRateType {
   INCLUSIVE
   EXCEPT
   SPECIFIC_RATE

@@ -1,5 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -114,29 +115,29 @@ public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
     {
     }
     
-    public ServiceBundleEntity (ObjectId serviceId, string name, decimal? unit, string? unitType, ServiceCreationType serviceCreationType, bool useCalculatedPrice, ServiceDurationEntity? duration, decimal cost, decimal price, string? description, bool allowOnlineBooking, ObjectId serviceCategoryId, List<ServiceMaterialEntity>? materials, List<ServiceLabourEntity>? laborRates, ObjectId? taxRateId, MarkupEntity? markup, List<AdditionalServiceCostEntity>? additionalCosts, List<ObjectId>? warrantyIds, Guid userOwnerId, Guid createdById)
+    public ServiceBundleEntity (IAddServiceBundleRequest addRequest, IUserContext userContext)
     {
-        ServiceId = serviceId;
-        Name = name;
-        Unit = unit;
-        UnitType = unitType;
-        ServiceCreationType = serviceCreationType;
-        UseCalculatedPrice = useCalculatedPrice;
-        Duration = duration;
-        Cost = cost;
-        Price = price;
-        Description = description;
+        ServiceId = addRequest.ServiceId;
+        Name = addRequest.Name;
+        Unit = addRequest.Unit;
+        UnitType = addRequest.UnitType;
+        ServiceCreationType = addRequest.ServiceCreationType;
+        UseCalculatedPrice = addRequest.UseCalculatedPrice;
+        Duration = addRequest.Duration != null ? new ServiceDurationEntity(addRequest.Duration) : null;
+        Cost = addRequest.Cost;
+        Price = addRequest.Price;
+        Description = addRequest.Description;
         Images = new List<ImageEntity>();
-        AllowOnlineBooking = allowOnlineBooking;
-        ServiceCategoryId = serviceCategoryId;
-        Materials = materials;
-        LaborRates = laborRates;
-        TaxRateId = taxRateId;
-        Markup = markup;
-        AdditionalCosts = additionalCosts;
-        WarrantyIds = warrantyIds;
-        UserOwnerId = userOwnerId;
-        CreatedById = createdById;
+        AllowOnlineBooking = addRequest.AllowOnlineBooking;
+        ServiceCategoryId = addRequest.ServiceCategoryId;
+        Materials = addRequest.Materials?.Select(x => new ServiceMaterialEntity(x)).ToList();
+        LaborRates = addRequest.LaborRates?.Select(x => new ServiceLabourEntity(x)).ToList();
+        TaxRateId = addRequest.TaxRateId;
+        Markup = addRequest.Markup != null ? new MarkupEntity(addRequest.Markup) : null;
+        AdditionalCosts = addRequest.AdditionalCosts?.Select(x => new AdditionalServiceCostEntity(x)).ToList();
+        WarrantyIds = addRequest.WarrantyIds?.ToList();
+        UserOwnerId = userContext.UserId;
+        CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;
     }
 }

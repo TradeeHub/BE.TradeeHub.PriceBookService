@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -41,15 +42,14 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
     public ServiceCategoryEntity()
     {
     }
-
-    public ServiceCategoryEntity(string name, string? description, Guid userOwnerId, Guid createdById,
-        ObjectId? parentServiceCategoryId)
+    
+    public ServiceCategoryEntity(IAddNewServiceCategoryRequest addRequest, IUserContext userContext)
     {
-        Name = name;
-        Description = description;
-        UserOwnerId = userOwnerId;
-        CreatedById = createdById;
-        ParentServiceCategoryId = parentServiceCategoryId;
+        Name = addRequest.Name;
+        Description = addRequest.Description;
+        UserOwnerId = userContext.UserId;
+        CreatedById = userContext.UserId;
+        ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
         Images = new List<ImageEntity>();
         CreatedAt = DateTime.UtcNow;
     }

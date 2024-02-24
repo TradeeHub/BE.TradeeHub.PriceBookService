@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver.Core.Misc;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
+using MongoDB.Driver.Core.Misc;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 

@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 
@@ -22,9 +23,9 @@ public class MarkupEntity
     {
     }
     
-    public MarkupEntity(MarkupType type, decimal value)
+    public MarkupEntity(IMarkupRequest addRequest)
     {
-        Type = type;
-        Value = value;
+        Type = addRequest.Type;
+        Value = addRequest.Value;
     }
 }

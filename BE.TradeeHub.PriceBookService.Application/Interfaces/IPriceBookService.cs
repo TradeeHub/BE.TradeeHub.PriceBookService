@@ -1,5 +1,5 @@
-﻿using BE.TradeeHub.PriceBookService.Application.Requests;
-using BE.TradeeHub.PriceBookService.Domain.Entities;
+﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
+using BE.TradeeHub.PriceBookService.Domain.Requests;
 
 namespace BE.TradeeHub.PriceBookService.Application.Interfaces;
 

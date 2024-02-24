@@ -1,5 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
-using HotChocolate.Types.Relay;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -10,7 +10,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// </summary>
 public class TaxRateEntity : AuditableEntity, IOwnedEntity
 {
-    [ID] [BsonId] public ObjectId Id { get; set; }
+    [BsonId] public ObjectId Id { get; set; }
 
     /// <summary>
     /// The tax rate that can be applied to a service or material or labour
@@ -31,13 +31,13 @@ public class TaxRateEntity : AuditableEntity, IOwnedEntity
     {
         
     }
-    public TaxRateEntity (string name, string? description, decimal percentageRate, Guid userOwnerId, Guid createdById)
+    public TaxRateEntity (IAddTaxRateRequest addRequest, IUserContext userContext)
     {
-        Name = name;
-        Description = description;
-        PercentageRate = percentageRate;
-        UserOwnerId = userOwnerId;
-        CreatedById = createdById;
+        Name = addRequest.Name;
+        Description = addRequest.Description;
+        PercentageRate = addRequest.PercentageRate;
+        UserOwnerId = userContext.UserId;
+        CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;
     }
 }

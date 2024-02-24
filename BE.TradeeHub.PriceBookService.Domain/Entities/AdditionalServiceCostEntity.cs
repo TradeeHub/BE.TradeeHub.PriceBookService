@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
@@ -27,7 +28,7 @@ public class AdditionalServiceCostEntity
     /// <summary>
     /// Tax rate of the additional cost
     /// </summary>
-    public TaxType? TaxRate { get; set; }
+    public TaxRateType? TaxRateType { get; set; }
 
     /// <summary>
     /// Tax rate id reference of the additional cost
@@ -38,12 +39,12 @@ public class AdditionalServiceCostEntity
     {
     }
     
-    public AdditionalServiceCostEntity (string name, string? description, decimal cost, TaxType? taxRate, ObjectId? taxRateId)
+    public AdditionalServiceCostEntity (IAdditionalServiceCostRequest addRequest)
     {
-        Name = name;
-        Description = description;
-        Cost = cost;
-        TaxRate = taxRate;
-        TaxRateId = taxRateId;
+        Name = addRequest.Name;
+        Description = addRequest.Description;
+        Cost = addRequest.Cost;
+        TaxRateType = addRequest.TaxRateType;
+        TaxRateId = addRequest.TaxRateId;
     }
 }

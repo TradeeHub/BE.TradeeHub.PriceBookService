@@ -1,5 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
-using HotChocolate.Types.Relay;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -10,7 +10,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 /// </summary>
 public class WarrantyEntity : AuditableEntity, IOwnedEntity
 {
-    [ID] [BsonId] public ObjectId Id { get; set; }
+    [BsonId] public ObjectId Id { get; set; }
 
     /// <summary>
     /// The services that the warranty can be applied to if empty then the warranty can be applied to all services
@@ -51,17 +51,17 @@ public class WarrantyEntity : AuditableEntity, IOwnedEntity
     {
     }
     
-    public WarrantyEntity (List<ObjectId>? serviceIds, string name, string? warrantyType, string? description, string terms, WarrantyDurationEntity warrantyDuration, decimal? price, Guid userOwnerId, Guid createdBy)
+    public WarrantyEntity (IAddWarrantyRequest addRequest, IUserContext userContext)
     {
-        ServiceIds = serviceIds;
-        Name = name;
-        WarrantyType = warrantyType;
-        Description = description;
-        Terms = terms;
-        WarrantyDuration = warrantyDuration;
-        Price = price;
-        UserOwnerId = userOwnerId;
-        createdBy = createdBy;
+        ServiceIds = addRequest.ServiceIds?.ToList();
+        Name = addRequest.Name;
+        WarrantyType = addRequest.WarrantyType;
+        Description = addRequest.Description;
+        Terms = addRequest.Terms;
+        WarrantyDuration = new WarrantyDurationEntity(addRequest.WarrantyDuration);
+        Price = addRequest.Price;
+        UserOwnerId = userContext.UserId;
+        CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;
     }
 }

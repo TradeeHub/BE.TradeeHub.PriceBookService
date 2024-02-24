@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -70,23 +71,21 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     {
     }
 
-    public MaterialEntity(string name, List<ObjectId>? serviceIds, string? description, string? identifier,
-        MarkupEntity? markup, decimal cost, decimal price, string unitType, List<string>? onlineMaterialUrls,
-        List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdById)
+    public MaterialEntity(IAddMaterialRequest addRequest, IUserContext userContext)
     {
-        Name = name;
-        ServiceIds = serviceIds;
-        Description = description;
-        Identifier = identifier;
-        Markup = markup;
-        Cost = cost;
-        Price = price;
-        UnitType = unitType;
+        Name = addRequest.Name;
+        ServiceIds = addRequest.ServiceIds?.ToList();
+        Description = addRequest.Description;
+        Identifier = addRequest.Identifier;
+        Markup = addRequest.Markup;
+        Cost = addRequest.Cost;
+        Price = addRequest.Price;
+        UnitType = addRequest.UnitType;
         Images = new List<ImageEntity>();
-        OnlineMaterialUrls = onlineMaterialUrls;
-        PricingTiers = pricingTiers;
-        UserOwnerId = userOwnerId;
-        CreatedById = createdById;
+        OnlineMaterialUrls = addRequest.OnlineMaterialUrls?.ToList();
+        PricingTiers = addRequest.PricingTiers?.ToList();
+        UserOwnerId = userContext.UserId;
+        CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;
     }
 }

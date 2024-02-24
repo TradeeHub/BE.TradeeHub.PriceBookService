@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
+using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 
@@ -31,16 +32,16 @@ public class ServiceMaterialEntity
     /// to be able to set the quantity based on the range of the service
     /// </summary>
     public List<RangeTierUnitEntity>? Ranges { get; set; }
-    
+
     public ServiceMaterialEntity()
     {
     }
-    
-    public ServiceMaterialEntity (ObjectId materialId, decimal? quantity, decimal? ratio, List<RangeTierUnitEntity>? ranges)
+
+    public ServiceMaterialEntity(IServiceMaterialRequest addRequest)
     {
-        MaterialId = materialId;
-        Quantity = quantity;
-        Ratio = ratio;
-        Ranges = ranges;
+        MaterialId = addRequest.MaterialId;
+        Quantity = addRequest.Quantity;
+        Ratio = addRequest.Ratio;
+        Ranges = addRequest.Ranges?.Select(x => new RangeTierUnitEntity(x.Quantity, x.Range)).ToList();
     }
 }

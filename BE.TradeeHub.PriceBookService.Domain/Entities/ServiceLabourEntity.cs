@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
+using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Entities;
 
@@ -17,34 +18,34 @@ public class ServiceLabourEntity
     /// Labour rate id to map to the LabourRateEntity via graphql 
     /// </summary>
     public ObjectId LabourRateId { get; set; }
-    
+
     /// <summary>
     /// The quantity of labour required for a certain service if it's a fixed service and not dynamic 
     /// </summary>
     public decimal? Quantity { get; set; }
-    
+
     /// <summary>
     /// Good for when you want to use a dynamic Service and want to map the ratio to the quantity for the service
     /// Example: if the service is install a thermostat and the quantity is hours and it take 2h to install 1 which means if I have to do 3 then it will take 6h
     /// </summary>
     public decimal? Ratio { get; set; }
-    
+
     /// <summary>
     /// Good for when you want to use a dynamic service and want to map the range to the quantity for the service
     /// to be able to set the quantity based on the range of the service
     /// Example: If service is to tile an area of 1-30sqm the the quantity of hours can be 15 while if they do an area of 31-60sqm then the quantity of hours can be 25 less than the 30sqm
     ///  </summary>
     public List<RangeTierUnitEntity>? Ranges { get; set; }
-    
+
     public ServiceLabourEntity()
     {
     }
-    
-    public ServiceLabourEntity (ObjectId labourRateId, decimal? quantity, decimal? ratio, List<RangeTierUnitEntity>? ranges)
+
+    public ServiceLabourEntity(IServiceLabourRequest addRequest)
     {
-        LabourRateId = labourRateId;
-        Quantity = quantity;
-        Ratio = ratio;
-        Ranges = ranges;
+        LabourRateId = addRequest.LabourRateId;
+        Quantity = addRequest.Quantity;
+        Ratio = addRequest.Ratio;
+        Ranges = addRequest.Ranges?.Select(x => new RangeTierUnitEntity(x.Quantity, x.Range)).ToList();
     }
 }

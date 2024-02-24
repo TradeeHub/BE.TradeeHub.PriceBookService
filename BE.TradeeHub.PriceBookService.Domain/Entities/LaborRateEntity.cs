@@ -1,5 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -40,7 +41,7 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
     /// Labor rate price I need to charge the customer for the rate type to be in profit
     /// </summary>
     public decimal Price { get; set; }
-    
+
     /// <summary>
     /// This enforces only certain cervices to show this option if null it's a global option
     /// </summary>
@@ -50,22 +51,22 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
     /// Pricing tiers for the labor rate which can very based on the quantity of the rate type if I have specific pricing for different quantities
     /// </summary>
     public List<PricingTierEntity>? PricingTiers { get; set; }
-    
+
     public LaborRateEntity()
     {
     }
-    
-    public LaborRateEntity (string name, string? description, string? rateType, decimal cost, decimal price,List<ObjectId>? serviceIds, List<PricingTierEntity>? pricingTiers, Guid userOwnerId, Guid createdById)
+
+    public LaborRateEntity(IAddLaborRateRequest addRequest, IUserContext userContext)
     {
-        Name = name;
-        Description = description;
-        RateType = rateType;
-        Cost = cost;
-        Price = price;
-        ServiceIds = serviceIds;
-        PricingTiers = pricingTiers;
-        UserOwnerId = userOwnerId;
-        CreatedById = createdById;
+        Name = addRequest.Name;
+        Description = addRequest.Description;
+        RateType = addRequest.RateType;
+        Cost = addRequest.Cost;
+        Price = addRequest.Price;
+        ServiceIds = addRequest.ServiceIds?.ToList();
+        PricingTiers = addRequest.PricingTiers?.Select(x => new PricingTierEntity(x)).ToList();
+        UserOwnerId = userContext.UserId;
+        CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;
     }
 }

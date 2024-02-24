@@ -1,8 +1,9 @@
 ﻿using System.Security.Claims;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 
 namespace BE.TradeeHub.PriceBookService.Application;
 
-public class UserContext
+public class UserContext : IUserContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

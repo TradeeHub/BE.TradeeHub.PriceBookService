@@ -1,9 +1,9 @@
-﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using MongoDB.Bson;
 
-namespace BE.TradeeHub.PriceBookService.Application.Requests;
+namespace BE.TradeeHub.PriceBookService.Domain.Requests;
 
-public class ServiceMaterialRequest
+public class ServiceMaterialRequest : IServiceMaterialRequest
 {
     public ObjectId MaterialId { get; set; }
     public decimal? Quantity { get; set; }
