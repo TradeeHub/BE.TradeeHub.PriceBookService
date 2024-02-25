@@ -1,10 +1,9 @@
 using BE.TradeeHub.PriceBookService.Application;
 using BE.TradeeHub.PriceBookService.Application.Extensions;
-using BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
-using BE.TradeeHub.PriceBookService.Application.Interfaces;
 using BE.TradeeHub.PriceBookService.Application.Services;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using BE.TradeeHub.PriceBookService.Infrastructure;
 using BE.TradeeHub.PriceBookService.Infrastructure.Extensions;
 using BE.TradeeHub.PriceBookService.Infrastructure.Repositories;
@@ -24,8 +23,8 @@ builder.Services.AddMongoDbCollections();
 builder.Services.AddScoped<IPriceBookService, PriceBookService>();
 builder.Services.AddScoped<IPriceBookRepository, PriceBookRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
-builder.Services.AddAwsServices(builder.Configuration, appSettings);
 
+builder.Services.AddAwsServices(builder.Configuration, appSettings);
 builder.Services.AddCors(appSettings).AddAuth(appSettings);
 
 builder.Services

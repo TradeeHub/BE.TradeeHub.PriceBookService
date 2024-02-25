@@ -31,4 +31,8 @@
       <ProjectReference Include="..\BE.TradeeHub.PriceBookService.Infrastructure\BE.TradeeHub.PriceBookService.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Interfaces\" />
+    </ItemGroup>
+
 </Project>

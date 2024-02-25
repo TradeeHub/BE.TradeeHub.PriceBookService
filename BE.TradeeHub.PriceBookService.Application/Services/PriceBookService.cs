@@ -1,6 +1,7 @@
-﻿using BE.TradeeHub.PriceBookService.Application.Interfaces;
-using BE.TradeeHub.PriceBookService.Domain.Entities;
+﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using BE.TradeeHub.PriceBookService.Domain.Requests;
 
 namespace BE.TradeeHub.PriceBookService.Application.Services;
@@ -17,7 +18,7 @@ public class PriceBookService : IPriceBookService
     }
 
     public async Task<ServiceCategoryEntity>
-        AddNewServiceCategoryAsync(UserContext userContext,
+        AddNewServiceCategoryAsync(IUserContext userContext,
             AddNewServiceCategoryRequest request, CancellationToken ctx)
     {
         var newServiceCategory = new ServiceCategoryEntity(request, userContext);
@@ -38,7 +39,7 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
     }
 
-    public async Task<LaborRateEntity> AddLaborRateAsync(UserContext userContext, AddLaborRateRequest request,
+    public async Task<LaborRateEntity> AddLaborRateAsync(IUserContext userContext, AddLaborRateRequest request,
         CancellationToken ctx)
     {
         var laborRateEntity = new LaborRateEntity(request, userContext);
@@ -46,7 +47,7 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateLabourRate(laborRateEntity, ctx);
     }
 
-    public async Task<ServiceEntity> AddServiceAsync(UserContext userContext, AddServiceRequest request,
+    public async Task<ServiceEntity> AddServiceAsync(IUserContext userContext, AddServiceRequest request,
         CancellationToken ctx)
     {
         var serviceEntity = new ServiceEntity(request, userContext);
@@ -67,7 +68,7 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateService(serviceEntity, ctx);
     }
 
-    public async Task<ServiceBundleEntity> AddServiceBundleAsync(UserContext userContext,
+    public async Task<ServiceBundleEntity> AddServiceBundleAsync(IUserContext userContext,
         AddServiceBundleRequest request, CancellationToken ctx)
     {
         var serviceBundleEntity = new ServiceBundleEntity(request, userContext);
@@ -75,7 +76,7 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateServiceBundle(serviceBundleEntity, ctx);
     }
 
-    public async Task<MaterialEntity> AddMaterialAsync(UserContext userContext, AddMaterialRequest request,
+    public async Task<MaterialEntity> AddMaterialAsync(IUserContext userContext, AddMaterialRequest request,
         CancellationToken ctx)
     {
         var materialEntity = new MaterialEntity(request, userContext);
@@ -96,7 +97,7 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateMaterial(materialEntity, ctx);
     }
 
-    public async Task<TaxRateEntity> AddTaxRateAsync(UserContext userContext, AddTaxRateRequest request,
+    public async Task<TaxRateEntity> AddTaxRateAsync(IUserContext userContext, AddTaxRateRequest request,
         CancellationToken ctx)
     {
         var taxRateEntity = new TaxRateEntity(request, userContext);
@@ -104,7 +105,7 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateTaxRate(taxRateEntity, ctx);
     }
 
-    public async Task<WarrantyEntity> AddWarrantyAsync(UserContext userContext, AddWarrantyRequest request,
+    public async Task<WarrantyEntity> AddWarrantyAsync(IUserContext userContext, AddWarrantyRequest request,
         CancellationToken ctx)
     {
         var warrantyEntity = new WarrantyEntity(request, userContext);
