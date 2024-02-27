@@ -1,6 +1,7 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace BE.TradeeHub.PriceBookService.Infrastructure.Repositories;
@@ -56,13 +57,17 @@ public class PriceBookRepository : IPriceBookRepository
         return warranty;
     }
     
-    public async Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, CancellationToken ctx)
+    public async Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(
+        IUserContext userContext, BsonDocument projection, CancellationToken ctx)
     {
+        // Apply the projection in the MongoDB query
         var filter = Builders<ServiceCategoryEntity>.Filter.Eq(x => x.UserOwnerId, userContext.UserId);
         var sort = Builders<ServiceCategoryEntity>.Sort.Descending(x => x.ModifiedAt).Descending(x => x.CreatedAt);
-
-        var temp =  await _dbContext.ServiceCategories.Find(filter).Sort(sort).ToListAsync(ctx);
-
-        return temp;
+        
+        return await _dbContext.ServiceCategories
+            .Find(filter)
+            .Sort(sort)
+            .Project<ServiceCategoryEntity>(projection)
+            .ToListAsync(ctx);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
+using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
 
@@ -11,5 +12,5 @@ public interface IPriceBookRepository
     Task<MaterialEntity> CreateMaterialAsync(MaterialEntity material, CancellationToken ctx);
     Task<TaxRateEntity> CreateTaxRateAsync(TaxRateEntity taxRate, CancellationToken ctx);
     Task<WarrantyEntity> CreateWarrantyAsync(WarrantyEntity warranty, CancellationToken ctx);
-    Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, CancellationToken ctx);
+    Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, BsonDocument projection, CancellationToken ctx);
 }

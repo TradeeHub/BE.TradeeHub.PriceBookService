@@ -3,6 +3,7 @@ using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using BE.TradeeHub.PriceBookService.Domain.Requests;
+using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Application.Services;
 
@@ -114,9 +115,9 @@ public class PriceBookService : IPriceBookService
     }
 
 
-    public async Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext,
+    public async Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, BsonDocument projection,
         CancellationToken ctx)
     {
-        return await _priceBookRepository.GetAllServiceCategoriesAsync(userContext, ctx);
+        return await _priceBookRepository.GetAllServiceCategoriesAsync(userContext, projection, ctx);
     }
 }
