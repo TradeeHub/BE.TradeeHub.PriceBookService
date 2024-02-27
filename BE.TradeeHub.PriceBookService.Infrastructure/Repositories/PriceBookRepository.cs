@@ -1,5 +1,7 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
+using MongoDB.Driver;
 
 namespace BE.TradeeHub.PriceBookService.Infrastructure.Repositories;
 
@@ -12,45 +14,55 @@ public class PriceBookRepository : IPriceBookRepository
         _dbContext = dbContext;
     }
     
-    public async Task<ServiceCategoryEntity> CreateServiceCategory(ServiceCategoryEntity serviceCategory, CancellationToken cancellationToken)
+    public async Task<ServiceCategoryEntity> CreateServiceCategoryAsync(ServiceCategoryEntity serviceCategory, CancellationToken cancellationToken)
     {
         await _dbContext.ServiceCategories.InsertOneAsync(serviceCategory, cancellationToken: cancellationToken);
         return serviceCategory;
     }
     
-    public async Task<LaborRateEntity> CreateLabourRate(LaborRateEntity laborRate, CancellationToken cancellationToken)
+    public async Task<LaborRateEntity> CreateLabourRateAsync(LaborRateEntity laborRate, CancellationToken cancellationToken)
     {
         await _dbContext.LabourRates.InsertOneAsync(laborRate, cancellationToken: cancellationToken);
         return laborRate;
     }
     
-    public async Task<ServiceEntity> CreateService(ServiceEntity service, CancellationToken cancellationToken)
+    public async Task<ServiceEntity> CreateServiceAsync(ServiceEntity service, CancellationToken cancellationToken)
     {
         await _dbContext.Services.InsertOneAsync(service, cancellationToken: cancellationToken);
         return service;
     }
     
-    public async Task<ServiceBundleEntity> CreateServiceBundle(ServiceBundleEntity serviceBundle, CancellationToken cancellationToken)
+    public async Task<ServiceBundleEntity> CreateServiceBundleAsync(ServiceBundleEntity serviceBundle, CancellationToken cancellationToken)
     {
         await _dbContext.ServiceBundles.InsertOneAsync(serviceBundle, cancellationToken: cancellationToken);
         return serviceBundle;
     }
     
-    public async Task<MaterialEntity> CreateMaterial(MaterialEntity material, CancellationToken cancellationToken)
+    public async Task<MaterialEntity> CreateMaterialAsync(MaterialEntity material, CancellationToken cancellationToken)
     {
         await _dbContext.Materials.InsertOneAsync(material, cancellationToken: cancellationToken);
         return material;
     }
     
-    public async Task<TaxRateEntity> CreateTaxRate(TaxRateEntity taxRate, CancellationToken cancellationToken)
+    public async Task<TaxRateEntity> CreateTaxRateAsync(TaxRateEntity taxRate, CancellationToken cancellationToken)
     {
         await _dbContext.TaxRates.InsertOneAsync(taxRate, cancellationToken: cancellationToken);
         return taxRate;
     }
     
-    public async Task<WarrantyEntity> CreateWarranty(WarrantyEntity warranty, CancellationToken cancellationToken)
+    public async Task<WarrantyEntity> CreateWarrantyAsync(WarrantyEntity warranty, CancellationToken ctx)
     {
-        await _dbContext.Warranties.InsertOneAsync(warranty, cancellationToken: cancellationToken);
+        await _dbContext.Warranties.InsertOneAsync(warranty, cancellationToken: ctx);
         return warranty;
+    }
+    
+    public async Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, CancellationToken ctx)
+    {
+        var filter = Builders<ServiceCategoryEntity>.Filter.Eq(x => x.UserOwnerId, userContext.UserId);
+        var sort = Builders<ServiceCategoryEntity>.Sort.Descending(x => x.ModifiedAt).Descending(x => x.CreatedAt);
+
+        var temp =  await _dbContext.ServiceCategories.Find(filter).Sort(sort).ToListAsync(ctx);
+
+        return temp;
     }
 }

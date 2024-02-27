@@ -1,12 +1,14 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using BE.TradeeHub.PriceBookService.Domain.Requests;
+using HotChocolate.Authorization;
 
 namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Mutations;
 
 [MutationType]
 public class Mutation
 {
+    [Authorize]
     public async Task<ServiceCategoryEntity> AddNewServiceCategoryAsync([Service] IPriceBookService priceBookService, [Service] UserContext userContext, AddNewServiceCategoryRequest request, CancellationToken ctx)
     {
         return await priceBookService.AddNewServiceCategoryAsync(userContext, request, ctx);

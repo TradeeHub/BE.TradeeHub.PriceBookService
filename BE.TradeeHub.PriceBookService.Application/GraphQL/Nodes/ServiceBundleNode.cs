@@ -5,7 +5,7 @@ using MongoDB.Driver;
 namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 
 [Node]
-[ExtendObjectType(typeof(ServiceBundleEntity), IgnoreProperties = ["UserOwnerId", "CreatedBy", "ModifiedBy", "TaxRateId"])]
+[ExtendObjectType(typeof(ServiceBundleEntity), IgnoreProperties = ["UserOwnerId", "CreatedById", "ModifiedById", "TaxRateId"])]
 public static class ServiceBundleNode
 {
     public static async Task<ServiceEntity?> GetService([Parent] ServiceBundleEntity service,

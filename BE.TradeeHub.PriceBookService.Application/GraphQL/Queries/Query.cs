@@ -1,7 +1,10 @@
 ﻿using BE.TradeeHub.PriceBookService.Application.Extensions;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using HotChocolate.Authorization;
 using HotChocolate.Data;
+using HotChocolate.Language;
+using HotChocolate.Resolvers;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -11,14 +14,15 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Queries;
 public static class Query
 {
     [Authorize]
-    [UsePaging(MaxPageSize = 1000)]
     [UseProjection]
-    [HotChocolate.Types.UseSorting]
-    [HotChocolate.Types.UseFiltering]
-    public static async Task<IExecutable<ServiceCategoryEntity>> GetServiceCategories(
-        [Service] IMongoCollection<ServiceCategoryEntity> collection, CancellationToken cancellationToken)
+    public static async Task<IList<ServiceCategoryEntity>> GetServiceCategories(
+        [Service] IPriceBookService priceBookService, [Service] UserContext userContext, CancellationToken ctx)
     {
-        return collection.AsExecutable();
+        // var objectType = resolverContext.Schema.GetType<ObjectType>(nameof(ServiceCategoryEntity));
+        //
+        // var selections = resolverContext.GetSelections(objectType, null, false);
+
+        return await priceBookService.GetAllServiceCategoriesAsync(userContext, ctx);
     }
     
     [NodeResolver]

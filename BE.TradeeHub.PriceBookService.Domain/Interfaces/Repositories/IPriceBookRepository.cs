@@ -4,11 +4,12 @@ namespace BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
 
 public interface IPriceBookRepository
 {
-    Task<ServiceCategoryEntity> CreateServiceCategory(ServiceCategoryEntity serviceCategory, CancellationToken cancellationToken);
-    Task<LaborRateEntity> CreateLabourRate(LaborRateEntity laborRate, CancellationToken cancellationToken);
-    Task<ServiceEntity> CreateService(ServiceEntity service, CancellationToken cancellationToken);
-    Task<ServiceBundleEntity> CreateServiceBundle(ServiceBundleEntity serviceBundle, CancellationToken cancellationToken);
-    Task<MaterialEntity> CreateMaterial(MaterialEntity material, CancellationToken cancellationToken);
-    Task<TaxRateEntity> CreateTaxRate(TaxRateEntity taxRate, CancellationToken cancellationToken);
-    Task<WarrantyEntity> CreateWarranty(WarrantyEntity warranty, CancellationToken cancellationToken);
+    Task<ServiceCategoryEntity> CreateServiceCategoryAsync(ServiceCategoryEntity serviceCategory, CancellationToken ctx);
+    Task<LaborRateEntity> CreateLabourRateAsync(LaborRateEntity laborRate, CancellationToken ctx);
+    Task<ServiceEntity> CreateServiceAsync(ServiceEntity service, CancellationToken ctx);
+    Task<ServiceBundleEntity> CreateServiceBundleAsync(ServiceBundleEntity serviceBundle, CancellationToken ctx);
+    Task<MaterialEntity> CreateMaterialAsync(MaterialEntity material, CancellationToken ctx);
+    Task<TaxRateEntity> CreateTaxRateAsync(TaxRateEntity taxRate, CancellationToken ctx);
+    Task<WarrantyEntity> CreateWarrantyAsync(WarrantyEntity warranty, CancellationToken ctx);
+    Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, CancellationToken ctx);
 }

@@ -5,6 +5,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 
 public interface IPriceBookService
 {
+    Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, CancellationToken ctx);
     Task<ServiceCategoryEntity> AddNewServiceCategoryAsync(IUserContext userContext, AddNewServiceCategoryRequest request, CancellationToken ctx);
     Task<LaborRateEntity> AddLaborRateAsync(IUserContext userContext, AddLaborRateRequest request, CancellationToken ctx);
     Task<ServiceEntity> AddServiceAsync(IUserContext userContext, AddServiceRequest request, CancellationToken ctx);

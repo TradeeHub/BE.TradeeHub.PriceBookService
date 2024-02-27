@@ -24,7 +24,7 @@ public class PriceBookService : IPriceBookService
         var newServiceCategory = new ServiceCategoryEntity(request, userContext);
 
         if (request.Images == null || !request.Images.Any())
-            return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
+            return await _priceBookRepository.CreateServiceCategoryAsync(newServiceCategory, ctx);
 
         var uploadTasks = request.Images
             .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "service-category", ctx))
@@ -36,7 +36,7 @@ public class PriceBookService : IPriceBookService
             newServiceCategory.Images?.Add(image);
         }
 
-        return await _priceBookRepository.CreateServiceCategory(newServiceCategory, ctx);
+        return await _priceBookRepository.CreateServiceCategoryAsync(newServiceCategory, ctx);
     }
 
     public async Task<LaborRateEntity> AddLaborRateAsync(IUserContext userContext, AddLaborRateRequest request,
@@ -44,7 +44,7 @@ public class PriceBookService : IPriceBookService
     {
         var laborRateEntity = new LaborRateEntity(request, userContext);
 
-        return await _priceBookRepository.CreateLabourRate(laborRateEntity, ctx);
+        return await _priceBookRepository.CreateLabourRateAsync(laborRateEntity, ctx);
     }
 
     public async Task<ServiceEntity> AddServiceAsync(IUserContext userContext, AddServiceRequest request,
@@ -53,7 +53,7 @@ public class PriceBookService : IPriceBookService
         var serviceEntity = new ServiceEntity(request, userContext);
 
         if (request.Images == null || !request.Images.Any())
-            return await _priceBookRepository.CreateService(serviceEntity, ctx);
+            return await _priceBookRepository.CreateServiceAsync(serviceEntity, ctx);
 
         var uploadTasks = request.Images
             .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "services", ctx))
@@ -65,7 +65,7 @@ public class PriceBookService : IPriceBookService
             serviceEntity.Images?.Add(image);
         }
 
-        return await _priceBookRepository.CreateService(serviceEntity, ctx);
+        return await _priceBookRepository.CreateServiceAsync(serviceEntity, ctx);
     }
 
     public async Task<ServiceBundleEntity> AddServiceBundleAsync(IUserContext userContext,
@@ -73,7 +73,7 @@ public class PriceBookService : IPriceBookService
     {
         var serviceBundleEntity = new ServiceBundleEntity(request, userContext);
 
-        return await _priceBookRepository.CreateServiceBundle(serviceBundleEntity, ctx);
+        return await _priceBookRepository.CreateServiceBundleAsync(serviceBundleEntity, ctx);
     }
 
     public async Task<MaterialEntity> AddMaterialAsync(IUserContext userContext, AddMaterialRequest request,
@@ -82,7 +82,7 @@ public class PriceBookService : IPriceBookService
         var materialEntity = new MaterialEntity(request, userContext);
 
         if (request.Images == null || !request.Images.Any())
-            return await _priceBookRepository.CreateMaterial(materialEntity, ctx);
+            return await _priceBookRepository.CreateMaterialAsync(materialEntity, ctx);
 
         var uploadTasks = request.Images
             .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "materials", ctx))
@@ -94,7 +94,7 @@ public class PriceBookService : IPriceBookService
             materialEntity.Images?.Add(image);
         }
 
-        return await _priceBookRepository.CreateMaterial(materialEntity, ctx);
+        return await _priceBookRepository.CreateMaterialAsync(materialEntity, ctx);
     }
 
     public async Task<TaxRateEntity> AddTaxRateAsync(IUserContext userContext, AddTaxRateRequest request,
@@ -102,7 +102,7 @@ public class PriceBookService : IPriceBookService
     {
         var taxRateEntity = new TaxRateEntity(request, userContext);
 
-        return await _priceBookRepository.CreateTaxRate(taxRateEntity, ctx);
+        return await _priceBookRepository.CreateTaxRateAsync(taxRateEntity, ctx);
     }
 
     public async Task<WarrantyEntity> AddWarrantyAsync(IUserContext userContext, AddWarrantyRequest request,
@@ -110,6 +110,13 @@ public class PriceBookService : IPriceBookService
     {
         var warrantyEntity = new WarrantyEntity(request, userContext);
 
-        return await _priceBookRepository.CreateWarranty(warrantyEntity, ctx);
+        return await _priceBookRepository.CreateWarrantyAsync(warrantyEntity, ctx);
+    }
+
+
+    public async Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext,
+        CancellationToken ctx)
+    {
+        return await _priceBookRepository.GetAllServiceCategoriesAsync(userContext, ctx);
     }
 }
