@@ -1,6 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using HotChocolate.Types;
--using HotChocolate.Types.Relay;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Requests;
