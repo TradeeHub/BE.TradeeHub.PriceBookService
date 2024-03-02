@@ -8,19 +8,17 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 [ExtendObjectType(typeof(MaterialEntity))]
 public static class MaterialNode
 {
-    public static async Task<List<ServiceEntity>> GetServices([Parent] MaterialEntity material,
-        IServicesGroupedByIdDataLoader servicesGroupedByIdDataLoader, CancellationToken ctx)
+    public static async Task<ServiceCategoryEntity?> GetServices([Parent] MaterialEntity material,
+        IServiceCategoryGroupedByIdDataLoader serviceCategoryGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (material.ServiceIds == null || material.ServiceIds.Count == 0)
+        if (material.ParentServiceCategoryId == null || material.ParentServiceCategoryId == ObjectId.Empty)
         {
-            return [];
+            return null;
         }
 
-        var serviceGroups = await servicesGroupedByIdDataLoader.LoadAsync(material.ServiceIds, ctx);
+        var serviceCategories = await serviceCategoryGroupedByIdDataLoader.LoadAsync(material.ParentServiceCategoryId.Value, ctx);
 
-        var services = serviceGroups.SelectMany(group => group).ToList();
-
-        return services;
+        return serviceCategories.FirstOrDefault();
     }
     
     [DataLoader]

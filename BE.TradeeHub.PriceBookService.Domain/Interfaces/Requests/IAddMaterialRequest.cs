@@ -7,12 +7,15 @@ namespace BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 public interface IAddMaterialRequest
 {
     public string Name { get; }
-    public IEnumerable<ObjectId>? ServiceIds { get; }
+    public ObjectId? ParentServiceCategoryId { get; }
     public string? Description { get; }
     public string? Identifier { get; }
     public MarkupEntity? Markup { get; }
-    public decimal Cost { get; }
-    public decimal Price { get; }
+    public bool Taxable { get; }
+    public bool AllowOnlineBooking { get; }
+    public decimal? OnlinePrice { get; }
+    public decimal? Cost { get; }
+    public decimal? Price { get; }
     public string UnitType { get; }
     public IEnumerable<IFile>? Images { get; set; }
     public IEnumerable<string>? OnlineMaterialUrls { get; }

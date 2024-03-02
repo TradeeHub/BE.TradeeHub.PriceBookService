@@ -15,7 +15,7 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// This enforces only certain cervices to show this option if null it's a global option
     /// </summary>
-    public List<ObjectId>? ServiceIds { get; set; }
+    public ObjectId? ParentServiceCategoryId { get; set; }
 
     /// <summary>
     /// The Name of the Material
@@ -36,16 +36,18 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     /// If markup is not null then the price will be calculated based on the markup
     /// </summary>
     public MarkupEntity? Markup { get; set; }
-
+    public bool Taxable { get; set; }
+    public bool AllowOnlineBooking { get; set; }
+    public decimal? OnlinePrice { get; set; }
     /// <summary>
     /// The cost of the material (the amount I paid for the material)
     /// </summary>
-    public decimal Cost { get; set; }
+    public decimal? Cost { get; set; }
 
     /// <summary>
     /// The price of the material I will be charging the customer
     /// </summary>
-    public decimal Price { get; set; }
+    public decimal? Price { get; set; }
 
     /// <summary>
     /// Unit of the material for example sqm, m, kg, etc
@@ -74,10 +76,13 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     public MaterialEntity(IAddMaterialRequest addRequest, IUserContext userContext)
     {
         Name = addRequest.Name;
-        ServiceIds = addRequest.ServiceIds?.ToList();
+        ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
         Description = addRequest.Description;
         Identifier = addRequest.Identifier;
         Markup = addRequest.Markup;
+        Taxable = addRequest.Taxable;
+        AllowOnlineBooking = addRequest.AllowOnlineBooking;
+        OnlinePrice = addRequest.OnlinePrice;
         Cost = addRequest.Cost;
         Price = addRequest.Price;
         UnitType = addRequest.UnitType;

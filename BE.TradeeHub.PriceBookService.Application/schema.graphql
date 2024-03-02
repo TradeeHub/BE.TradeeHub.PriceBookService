@@ -62,13 +62,16 @@ type MaterialEntity implements Node {
   creator: UserEntity!
   modifier: UserEntity
   id: ID!
-  serviceIds: [ID!]
+  parentServiceCategoryId: ID
   name: String!
   description: String
   identifier: String
   markup: MarkupEntity
-  cost: Decimal!
-  price: Decimal!
+  taxable: Boolean!
+  allowOnlineBooking: Boolean!
+  onlinePrice: Decimal
+  cost: Decimal
+  price: Decimal
   unitType: String!
   images: [ImageEntity!]
   onlineMaterialUrls: [String!]
@@ -78,7 +81,7 @@ type MaterialEntity implements Node {
   createdById: UUID!
   modifiedAt: DateTime
   modifiedById: UUID
-  services: [ServiceEntity!]!
+  services: ServiceCategoryEntity
 }
 
 type Mutation {
@@ -275,12 +278,15 @@ input AddLaborRateRequestInput {
 
 input AddMaterialRequestInput {
   name: String!
-  serviceIds: [ID!]
+  parentServiceCategoryId: ID
   description: String
   identifier: String
   markup: MarkupEntityInput
-  cost: Decimal!
-  price: Decimal!
+  taxable: Boolean!
+  allowOnlineBooking: Boolean!
+  onlinePrice: Decimal
+  cost: Decimal
+  price: Decimal
   unitType: String!
   images: [Upload!]
   onlineMaterialUrls: [String!]
