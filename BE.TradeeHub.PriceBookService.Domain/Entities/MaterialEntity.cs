@@ -36,9 +36,27 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     /// If markup is not null then the price will be calculated based on the markup
     /// </summary>
     public MarkupEntity? Markup { get; set; }
+
+    /// <summary>
+    /// If true it means it will use PricingTiers
+    /// </summary>
+    public bool UsePriceRange { get; set; }
+
+    /// <summary>
+    /// The tax will be applied to the material on the quote/job
+    /// </summary>
     public bool Taxable { get; set; }
+
+    /// <summary>
+    /// Allows the material to be booked online
+    /// </summary>
     public bool AllowOnlineBooking { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public decimal? OnlinePrice { get; set; }
+
     /// <summary>
     /// The cost of the material (the amount I paid for the material)
     /// </summary>
@@ -75,20 +93,21 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
 
     public MaterialEntity(IAddMaterialRequest addRequest, IUserContext userContext)
     {
-        Name = addRequest.Name;
+        Name = addRequest.Name.Trim();
         ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
-        Description = addRequest.Description;
-        Identifier = addRequest.Identifier;
+        Description = addRequest.Description?.Trim();
+        Identifier = addRequest.Identifier?.Trim();
         Markup = addRequest.Markup;
         Taxable = addRequest.Taxable;
         AllowOnlineBooking = addRequest.AllowOnlineBooking;
-        OnlinePrice = addRequest.OnlinePrice;
-        Cost = addRequest.Cost;
-        Price = addRequest.Price;
-        UnitType = addRequest.UnitType;
+        OnlinePrice = addRequest is { UsePriceRange: false, AllowOnlineBooking: true } ? addRequest.OnlinePrice : null;
+        UsePriceRange = addRequest.UsePriceRange;
+        Cost = !addRequest.UsePriceRange ? addRequest.Cost : null;
+        Price = !addRequest.UsePriceRange ? addRequest.Price : null;
+        UnitType = addRequest.UnitType.Trim();
         Images = new List<ImageEntity>();
         OnlineMaterialUrls = addRequest.OnlineMaterialUrls?.ToList();
-        PricingTiers = addRequest.PricingTiers?.ToList();
+        PricingTiers = addRequest.UsePriceRange ? addRequest.PricingTiers?.ToList() : null;
         UserOwnerId = userContext.UserId;
         CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;

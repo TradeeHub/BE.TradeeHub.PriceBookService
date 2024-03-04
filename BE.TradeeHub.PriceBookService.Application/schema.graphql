@@ -67,6 +67,7 @@ type MaterialEntity implements Node {
   description: String
   identifier: String
   markup: MarkupEntity
+  usePriceRange: Boolean!
   taxable: Boolean!
   allowOnlineBooking: Boolean!
   onlinePrice: Decimal
@@ -282,6 +283,7 @@ input AddMaterialRequestInput {
   description: String
   identifier: String
   markup: MarkupEntityInput
+  usePriceRange: Boolean!
   taxable: Boolean!
   allowOnlineBooking: Boolean!
   onlinePrice: Decimal

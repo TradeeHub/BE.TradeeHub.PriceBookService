@@ -11,6 +11,7 @@ public interface IAddMaterialRequest
     public string? Description { get; }
     public string? Identifier { get; }
     public MarkupEntity? Markup { get; }
+    public bool UsePriceRange { get; set; }
     public bool Taxable { get; }
     public bool AllowOnlineBooking { get; }
     public decimal? OnlinePrice { get; }

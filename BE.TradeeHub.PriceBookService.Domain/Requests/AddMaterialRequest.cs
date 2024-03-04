@@ -1,6 +1,7 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 using HotChocolate.Types;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Requests;
@@ -8,10 +9,12 @@ namespace BE.TradeeHub.PriceBookService.Domain.Requests;
 public class AddMaterialRequest : IAddMaterialRequest
 {
     public required string Name { get; set; }
+    [ID]
     public ObjectId? ParentServiceCategoryId { get; set; }
     public string? Description { get; set; }
     public string? Identifier { get; set; }
     public MarkupEntity? Markup { get; set; }
+    public bool UsePriceRange { get; set; }
     public bool Taxable { get; set; }
     public bool AllowOnlineBooking { get; set; }
     public decimal? OnlinePrice { get; set; }
