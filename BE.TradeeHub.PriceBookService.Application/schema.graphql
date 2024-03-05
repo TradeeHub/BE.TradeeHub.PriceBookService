@@ -40,16 +40,17 @@ type LaborRateEntity implements Node {
   name: String!
   description: String
   rateType: String
-  cost: Decimal!
-  price: Decimal!
-  serviceIds: [ID!]
+  usePriceRange: Boolean!
+  cost: Decimal
+  price: Decimal
+  parentServiceCategoryId: ID
   pricingTiers: [PricingTierEntity!]
   userOwnerId: UUID!
   createdAt: DateTime!
   createdById: UUID!
   modifiedAt: DateTime
   modifiedById: UUID
-  services: [ServiceEntity!]!
+  serviceCategory: ServiceCategoryEntity
 }
 
 type MarkupEntity {
@@ -82,7 +83,7 @@ type MaterialEntity implements Node {
   createdById: UUID!
   modifiedAt: DateTime
   modifiedById: UUID
-  services: ServiceCategoryEntity
+  serviceCategory: ServiceCategoryEntity
 }
 
 type Mutation {
@@ -271,9 +272,10 @@ input AddLaborRateRequestInput {
   name: String!
   description: String
   rateType: String
-  cost: Decimal!
-  price: Decimal!
-  serviceIds: [ID!]
+  usePriceRange: Boolean!
+  cost: Decimal
+  price: Decimal
+  parentServiceCategoryId: ID
   pricingTiers: [PricingTierRequestInput!]
 }
 

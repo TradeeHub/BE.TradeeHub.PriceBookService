@@ -8,8 +8,9 @@ public interface IAddLaborRateRequest
     public string Name { get; }
     public string? Description { get; }
     public string? RateType { get; }
-    public decimal Cost { get; }
-    public decimal Price { get; }
-    public IEnumerable<ObjectId>? ServiceIds { get; }
+    public bool UsePriceRange { get; }
+    public decimal? Cost { get; }
+    public decimal? Price { get; }
+    public ObjectId? ParentServiceCategoryId  { get; }
     public IEnumerable<PricingTierRequest>? PricingTiers { get; }
 }

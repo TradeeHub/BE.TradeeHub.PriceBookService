@@ -8,19 +8,17 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 [ExtendObjectType(typeof(LaborRateEntity))]
 public static class LaborRateNode
 {
-    public static async Task<List<ServiceEntity>> GetServices([Parent] LaborRateEntity laborRate,
-        IServicesGroupedByIdDataLoader servicesGroupedByIdDataLoader, CancellationToken ctx)
+    public static async Task<ServiceCategoryEntity?> GetServiceCategory([Parent] LaborRateEntity laborRate,
+        IServiceCategoryGroupedByIdDataLoader serviceCategoryGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (laborRate.ServiceIds == null || laborRate.ServiceIds.Count == 0)
+        if (laborRate.ParentServiceCategoryId == null || laborRate.ParentServiceCategoryId == ObjectId.Empty)
         {
-            return [];
+            return null;
         }
 
-        var serviceGroups = await servicesGroupedByIdDataLoader.LoadAsync(laborRate.ServiceIds, ctx);
+        var serviceCategories = await serviceCategoryGroupedByIdDataLoader.LoadAsync(laborRate.ParentServiceCategoryId.Value, ctx);
 
-        var services = serviceGroups.SelectMany(group => group).ToList();
-
-        return services;
+        return serviceCategories.FirstOrDefault();
     }
 
     [DataLoader]

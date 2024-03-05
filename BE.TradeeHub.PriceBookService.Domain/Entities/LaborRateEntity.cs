@@ -31,21 +31,22 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
     /// </summary>
     [BsonRepresentation(BsonType.String)]
     public string? RateType { get; set; }
+    public bool UsePriceRange { get; set;  }
 
     /// <summary>
     /// The cost that I will end up paying for the labor for the rate type
     /// </summary>
-    public decimal Cost { get; set; }
+    public decimal? Cost { get; set; }
 
     /// <summary>
     /// Labor rate price I need to charge the customer for the rate type to be in profit
     /// </summary>
-    public decimal Price { get; set; }
+    public decimal? Price { get; set; }
 
     /// <summary>
     /// This enforces only certain cervices to show this option if null it's a global option
     /// </summary>
-    public List<ObjectId>? ServiceIds { get; set; }
+    public ObjectId? ParentServiceCategoryId { get; set; }
 
     /// <summary>
     /// Pricing tiers for the labor rate which can very based on the quantity of the rate type if I have specific pricing for different quantities
@@ -58,13 +59,14 @@ public class LaborRateEntity : AuditableEntity, IOwnedEntity
 
     public LaborRateEntity(IAddLaborRateRequest addRequest, IUserContext userContext)
     {
-        Name = addRequest.Name;
-        Description = addRequest.Description;
-        RateType = addRequest.RateType;
-        Cost = addRequest.Cost;
-        Price = addRequest.Price;
-        ServiceIds = addRequest.ServiceIds?.ToList();
-        PricingTiers = addRequest.PricingTiers?.Select(x => new PricingTierEntity(x)).ToList();
+        Name = addRequest.Name.Trim();
+        Description = addRequest.Description?.Trim();
+        RateType = addRequest.RateType?.Trim();
+        UsePriceRange = addRequest.UsePriceRange;
+        Cost = !addRequest.UsePriceRange ? addRequest.Cost : null;
+        Price = !addRequest.UsePriceRange ? addRequest.Price : null;
+        ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
+        PricingTiers = addRequest.UsePriceRange ? addRequest.PricingTiers?.Select(x => new PricingTierEntity(x)).ToList() : null;
         UserOwnerId = userContext.UserId;
         CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;
