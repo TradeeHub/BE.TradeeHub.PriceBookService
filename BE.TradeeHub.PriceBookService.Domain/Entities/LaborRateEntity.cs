@@ -1,7 +1,5 @@
-﻿using BE.TradeeHub.PriceBookService.Domain.Enums;
-using BE.TradeeHub.PriceBookService.Domain.Interfaces;
+﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
-using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

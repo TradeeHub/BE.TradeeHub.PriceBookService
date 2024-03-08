@@ -15,7 +15,7 @@ public class WarrantyEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// The services that the warranty can be applied to if empty then the warranty can be applied to all services
     /// </summary>
-    public List<ObjectId>? ServiceIds { get; set; }
+    public ObjectId? ParentServiceCategoryId { get; set; }
 
     /// <summary>
     /// The name of the warranty
@@ -53,7 +53,7 @@ public class WarrantyEntity : AuditableEntity, IOwnedEntity
     
     public WarrantyEntity (IAddWarrantyRequest addRequest, IUserContext userContext)
     {
-        ServiceIds = addRequest.ServiceIds?.ToList();
+        ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
         Name = addRequest.Name;
         WarrantyType = addRequest.WarrantyType;
         Description = addRequest.Description;

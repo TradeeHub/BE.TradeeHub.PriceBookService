@@ -18,7 +18,7 @@ public class AddServiceRequest : IAddServiceRequest
     public string? Description { get; set; }
     public IEnumerable<IFile>? Images { get; set; }
     public bool AllowOnlineBooking { get; set; }
-    public ObjectId ServiceCategoryId { get; set; }
+    public ObjectId? ParentServiceCategoryId { get; set; }
     public IEnumerable<ServiceMaterialRequest>? Materials { get; set; } = [];
     public IEnumerable<ServiceLabourRequest>? LaborRates { get; set; } = [];
     public ObjectId TaxRateId { get; set; }

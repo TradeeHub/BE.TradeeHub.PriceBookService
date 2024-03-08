@@ -1,11 +1,13 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Requests;
 
 public class AddWarrantyRequest : IAddWarrantyRequest
 {
-    public IEnumerable<ObjectId>? ServiceIds { get; set; }
+    [ID]
+    public ObjectId? ParentServiceCategoryId { get; set; }
     public string Name { get; set; }
     public string? WarrantyType { get; set; }
     public string? Description { get; set; }

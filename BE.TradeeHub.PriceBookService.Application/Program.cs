@@ -4,6 +4,7 @@ using BE.TradeeHub.PriceBookService.Application.Services;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
+using BE.TradeeHub.PriceBookService.Domain.Responses;
 using BE.TradeeHub.PriceBookService.Infrastructure;
 using BE.TradeeHub.PriceBookService.Infrastructure.Extensions;
 using BE.TradeeHub.PriceBookService.Infrastructure.Repositories;
@@ -37,6 +38,7 @@ builder.Services
     .AddTypeConverter<ObjectId, string>(o => o.ToString())
     .AddTypeConverter<string, ObjectId>(o => ObjectId.Parse(o))
     .AddType<UploadType>()
+    .AddType<OperationResult>()
     .AddMongoDbSorting()
     .AddMongoDbProjections()
     .AddMongoDbPagingProviders()

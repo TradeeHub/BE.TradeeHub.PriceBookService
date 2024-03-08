@@ -3,6 +3,7 @@ using Amazon.S3.Model;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
+using BE.TradeeHub.PriceBookService.Domain.Responses;
 using HotChocolate.Types;
 
 namespace BE.TradeeHub.PriceBookService.Infrastructure.Repositories;
@@ -44,6 +45,37 @@ public class ImageRepository : IImageRepository
         {
             var message = $"Failed to upload image to S3. {e.Message}";
             throw new Exception(message);
+        }
+    }
+
+    public async Task DeleteImagesAsync(List<string> imageKeys, CancellationToken cancellationToken,
+        OperationResult? operationResult = null)
+    {
+        var deleteObjectsRequest = new DeleteObjectsRequest
+        {
+            BucketName = _appSettings.S3BucketName,
+            Objects = imageKeys.ConvertAll(key => new KeyVersion { Key = key })
+        };
+        
+        var response = await _s3Client.DeleteObjectsAsync(deleteObjectsRequest, cancellationToken);
+
+        // Logging successful deletions
+        foreach (var deletedObject in response.DeletedObjects)
+        {
+            operationResult?.AddMessage($"Successfully deleted: {deletedObject.Key}");
+        }
+
+        // Handling deletion errors
+        if (response.DeleteErrors.Count > 0)
+        {
+            foreach (var error in response.DeleteErrors)
+            {
+                operationResult?.AddError($"Key: {error.Key}, Code: {error.Code}, Message: {error.Message}");
+            }
+        }
+        else
+        {
+            operationResult?.AddMessage("All images deleted successfully.");
         }
     }
 }

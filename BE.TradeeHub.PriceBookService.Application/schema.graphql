@@ -3,6 +3,12 @@ schema {
   mutation: Mutation
 }
 
+interface IOperationResult {
+  success: Boolean!
+  messages: [String!]
+  errors: [String!]
+}
+
 "The node interface is implemented by entities that have a global unique identifier."
 interface Node {
   id: ID!
@@ -87,6 +93,7 @@ type MaterialEntity implements Node {
 }
 
 type Mutation {
+  deleteServiceCategory(id: ID!): IOperationResult! @authorize
   addNewServiceCategory(request: AddNewServiceCategoryRequestInput!): ServiceCategoryEntity! @authorize
   addLaborRate(request: AddLaborRateRequestInput!): LaborRateEntity!
   addService(request: AddServiceRequestInput!): ServiceEntity!
@@ -94,6 +101,14 @@ type Mutation {
   addMaterial(request: AddMaterialRequestInput!): MaterialEntity!
   addTaxRate(request: AddTaxRateRequestInput!): TaxRateEntity!
   addWarranty(request: AddWarrantyRequestInput!): WarrantyEntity!
+}
+
+type OperationResult implements IOperationResult {
+  addMessage(error: String!): OperationResult!
+  addError(error: String!): OperationResult!
+  success: Boolean!
+  messages: [String!]
+  errors: [String!]
 }
 
 type PricingTierEntity {
@@ -145,7 +160,7 @@ type ServiceBundleEntity implements Node {
   description: String
   images: [ImageEntity!]
   allowOnlineBooking: Boolean!
-  serviceCategoryId: ID!
+  parentServiceCategoryId: ID
   materials: [ServiceMaterialEntity!]
   laborRates: [ServiceLabourEntity!]
   markup: MarkupEntity
@@ -153,7 +168,6 @@ type ServiceBundleEntity implements Node {
   warrantyIds: [ID!]
   createdAt: DateTime!
   modifiedAt: DateTime
-  service: ServiceEntity
   warranties: [WarrantyEntity!]!
   taxRate: TaxRateEntity
   serviceCategory: ServiceCategoryEntity
@@ -199,16 +213,16 @@ type ServiceEntity implements Node {
   description: String
   images: [ImageEntity!]
   allowOnlineBooking: Boolean!
+  parentServiceCategoryId: ID
   materials: [ServiceMaterialEntity!]
   laborRates: [ServiceLabourEntity!]
   markup: MarkupEntity
   additionalCosts: [AdditionalServiceCostEntity!]
   createdAt: DateTime!
   modifiedAt: DateTime
-  warranties: [WarrantyEntity!]!
+  serviceCategory: ServiceCategoryEntity
   bundles: [ServiceBundleEntity!]!
   taxRate: TaxRateEntity
-  serviceCategory: ServiceCategoryEntity
 }
 
 type ServiceLabourEntity {
@@ -254,7 +268,7 @@ type WarrantyEntity implements Node {
   creator: UserEntity!
   modifier: UserEntity
   id: ID!
-  serviceIds: [ID!]
+  parentServiceCategoryId: ID
   name: String!
   warrantyType: String
   description: String
@@ -317,7 +331,7 @@ input AddServiceBundleRequestInput {
   description: String
   images: [Upload!]
   allowOnlineBooking: Boolean!
-  serviceCategoryId: ID!
+  parentServiceCategoryId: ID
   materials: [ServiceMaterialRequestInput!]
   laborRates: [ServiceLabourRequestInput!]
   taxRateId: ID!
@@ -338,7 +352,7 @@ input AddServiceRequestInput {
   description: String
   images: [Upload!]
   allowOnlineBooking: Boolean!
-  serviceCategoryId: ID!
+  parentServiceCategoryId: ID
   materials: [ServiceMaterialRequestInput!]
   laborRates: [ServiceLabourRequestInput!]
   taxRateId: ID!
@@ -354,7 +368,7 @@ input AddTaxRateRequestInput {
 }
 
 input AddWarrantyRequestInput {
-  serviceIds: [ID!]
+  parentServiceCategoryId: ID
   name: String!
   warrantyType: String
   description: String

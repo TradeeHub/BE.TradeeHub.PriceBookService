@@ -8,19 +8,6 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 [ExtendObjectType(typeof(ServiceBundleEntity), IgnoreProperties = ["UserOwnerId", "CreatedById", "ModifiedById", "TaxRateId"])]
 public static class ServiceBundleNode
 {
-    public static async Task<ServiceEntity?> GetService([Parent] ServiceBundleEntity service,
-        IServicesGroupedByIdDataLoader servicesGroupedByIdDataLoader, CancellationToken ctx)
-    {
-        if (service.ServiceCategoryId == ObjectId.Empty)
-        {
-            return null;
-        }
-
-        var services = await servicesGroupedByIdDataLoader.LoadAsync(service.ServiceCategoryId, ctx);
-
-        return services.FirstOrDefault();
-    }
-    
     public static async Task<List<WarrantyEntity>> GetWarranties([Parent] ServiceBundleEntity service,
         IWarrantiesGroupedByIdDataLoader warrantyByIdDataLoader, CancellationToken ctx)
     {
@@ -52,14 +39,14 @@ public static class ServiceBundleNode
     public static async Task<ServiceCategoryEntity?> GetServiceCategory([Parent] ServiceBundleEntity service,
         IServiceCategoryGroupedByIdDataLoader serviceCategoryGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (service.ServiceCategoryId == ObjectId.Empty)
+        if (service.ParentServiceCategoryId == null || service.ParentServiceCategoryId == ObjectId.Empty)
         {
             return null;
-        }
+        }        
+        
+        var serviceCategories = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ParentServiceCategoryId.Value, ctx);
 
-        var serviceCategory = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ServiceCategoryId, ctx);
-
-        return serviceCategory.FirstOrDefault();
+        return serviceCategories.FirstOrDefault();
     }
 
     [DataLoader]

@@ -5,7 +5,7 @@ namespace BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
 
 public interface IAddWarrantyRequest
 {
-    public IEnumerable<ObjectId>? ServiceIds{ get; }
+    public ObjectId? ParentServiceCategoryId{ get; }
     public string Name { get; }
     public string? WarrantyType { get; }
     public string? Description { get; }

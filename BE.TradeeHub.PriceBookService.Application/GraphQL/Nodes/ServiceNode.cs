@@ -8,19 +8,17 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Nodes;
 [ExtendObjectType(typeof(ServiceEntity), IgnoreProperties = ["UserOwnerId", "CreatedById", "ModifiedById", "TaxRateId", "WarrantyIds", "BundleIds", "ServiceCategoryId"])]
 public static class ServiceNode
 {
-    public static async Task<List<WarrantyEntity>> GetWarranties([Parent] ServiceEntity service,
-        IWarrantiesGroupedByIdDataLoader warrantyByIdDataLoader, CancellationToken ctx)
+    public static async Task<ServiceCategoryEntity?> GetServiceCategory([Parent] MaterialEntity material,
+        IServiceCategoryGroupedByIdDataLoader serviceCategoryGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (service.WarrantyIds == null || service.WarrantyIds.Count == 0)
+        if (material.ParentServiceCategoryId == null || material.ParentServiceCategoryId == ObjectId.Empty)
         {
-            return [];
+            return null;
         }
 
-        var warrantyGroups = await warrantyByIdDataLoader.LoadAsync(service.WarrantyIds, ctx);
+        var serviceCategories = await serviceCategoryGroupedByIdDataLoader.LoadAsync(material.ParentServiceCategoryId.Value, ctx);
 
-        var warranties = warrantyGroups.SelectMany(group => group).ToList();
-
-        return warranties;
+        return serviceCategories.FirstOrDefault();
     }
 
     public static async Task<List<ServiceBundleEntity>> GetBundles([Parent] ServiceEntity service,
@@ -54,12 +52,12 @@ public static class ServiceNode
     public static async Task<ServiceCategoryEntity?> GetServiceCategory([Parent] ServiceEntity service,
         IServiceCategoryGroupedByIdDataLoader serviceCategoryGroupedByIdDataLoader, CancellationToken ctx)
     {
-        if (service.ServiceCategoryId == ObjectId.Empty)
+        if (service.ParentServiceCategoryId == null || service.ParentServiceCategoryId == ObjectId.Empty)
         {
             return null;
         }
 
-        var serviceCategory = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ServiceCategoryId, ctx);
+        var serviceCategory = await serviceCategoryGroupedByIdDataLoader.LoadAsync(service.ParentServiceCategoryId.Value, ctx);
 
         return serviceCategory.FirstOrDefault();
     }

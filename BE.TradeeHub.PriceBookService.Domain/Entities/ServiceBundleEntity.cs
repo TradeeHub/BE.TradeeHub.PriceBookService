@@ -79,7 +79,7 @@ public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// The category of which the service belongs to will mapped to the ServiceCategoryEntity via graphql
     /// </summary>
-    public ObjectId ServiceCategoryId { get; set; }
+    public ObjectId? ParentServiceCategoryId { get; set; }
 
     /// <summary>
     /// All materials that could be used in the service
@@ -129,7 +129,7 @@ public class ServiceBundleEntity : AuditableEntity, IOwnedEntity
         Description = addRequest.Description;
         Images = new List<ImageEntity>();
         AllowOnlineBooking = addRequest.AllowOnlineBooking;
-        ServiceCategoryId = addRequest.ServiceCategoryId;
+        ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
         Materials = addRequest.Materials?.Select(x => new ServiceMaterialEntity(x)).ToList();
         LaborRates = addRequest.LaborRates?.Select(x => new ServiceLabourEntity(x)).ToList();
         TaxRateId = addRequest.TaxRateId;

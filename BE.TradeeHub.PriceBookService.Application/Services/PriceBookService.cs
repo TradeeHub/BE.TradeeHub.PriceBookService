@@ -3,6 +3,7 @@ using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using BE.TradeeHub.PriceBookService.Domain.Requests;
+using BE.TradeeHub.PriceBookService.Domain.Responses;
 using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Application.Services;
@@ -38,6 +39,21 @@ public class PriceBookService : IPriceBookService
         }
 
         return await _priceBookRepository.CreateServiceCategoryAsync(newServiceCategory, ctx);
+    }
+
+    public async Task<OperationResult> DeleteServiceCategoryAsync(IUserContext userContext, ObjectId Id, CancellationToken ctx)
+    {
+        var (operationResult, deletedServiceCategory)=  await _priceBookRepository.DeleteServiceCategoryAsync(userContext, Id, ctx);
+        if (deletedServiceCategory == null) return operationResult;
+        
+        var keys = deletedServiceCategory.Images?.Select(i => i.S3Key).ToList();
+        
+        if(keys == null || keys.Count == 0)
+            return operationResult;
+        
+        await _imageRepository.DeleteImagesAsync(keys, ctx, operationResult);
+        
+        return operationResult;
     }
 
     public async Task<LaborRateEntity> AddLaborRateAsync(IUserContext userContext, AddLaborRateRequest request,

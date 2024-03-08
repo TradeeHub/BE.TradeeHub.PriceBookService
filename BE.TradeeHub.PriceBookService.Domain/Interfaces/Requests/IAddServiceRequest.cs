@@ -18,7 +18,7 @@ public interface IAddServiceRequest
     public string? Description { get; }
     public IEnumerable<IFile>? Images { get; }
     public bool AllowOnlineBooking { get; }
-    public ObjectId ServiceCategoryId { get; }
+    public ObjectId? ParentServiceCategoryId { get; }
     public IEnumerable<ServiceMaterialRequest>? Materials { get; }
     public IEnumerable<ServiceLabourRequest>? LaborRates { get; }
     public ObjectId TaxRateId { get; }

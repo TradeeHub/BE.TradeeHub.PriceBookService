@@ -1,5 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Requests;
+using BE.TradeeHub.PriceBookService.Domain.Responses;
 using MongoDB.Bson;
 
 namespace BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
@@ -8,6 +9,8 @@ public interface IPriceBookService
 {
     Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, BsonDocument projection, CancellationToken ctx);
     Task<ServiceCategoryEntity> AddNewServiceCategoryAsync(IUserContext userContext, AddNewServiceCategoryRequest request, CancellationToken ctx);
+    Task<OperationResult> DeleteServiceCategoryAsync(IUserContext userContext, ObjectId Id, CancellationToken ctx);
+
     Task<LaborRateEntity> AddLaborRateAsync(IUserContext userContext, AddLaborRateRequest request, CancellationToken ctx);
     Task<ServiceEntity> AddServiceAsync(IUserContext userContext, AddServiceRequest request, CancellationToken ctx);
     Task<ServiceBundleEntity> AddServiceBundleAsync(IUserContext userContext, AddServiceBundleRequest request, CancellationToken ctx);
