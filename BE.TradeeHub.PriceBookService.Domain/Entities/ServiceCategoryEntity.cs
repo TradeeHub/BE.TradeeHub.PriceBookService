@@ -32,12 +32,12 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// Service categories that are sub-categories of this service category
     /// </summary>
-    public List<ObjectId>? ServiceCategoryIds { get; set; }
+    public List<ObjectId> ServiceCategoryIds { get; set; } = [];
 
     /// <summary>
     /// Services that are part of this service category
     /// </summary>
-    public List<ObjectId>? ServiceIds { get; set; } // each service can have sub-services aka another ServiceEntity
+    public List<ObjectId> ServiceIds { get; set; } = [];
 
     public ServiceCategoryEntity()
     {
