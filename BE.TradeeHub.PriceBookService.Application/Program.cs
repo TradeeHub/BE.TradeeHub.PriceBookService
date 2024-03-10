@@ -1,5 +1,6 @@
 using BE.TradeeHub.PriceBookService.Application;
 using BE.TradeeHub.PriceBookService.Application.Extensions;
+using BE.TradeeHub.PriceBookService.Application.GraphQL;
 using BE.TradeeHub.PriceBookService.Application.Services;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
@@ -34,17 +35,15 @@ builder.Services
     .AddGlobalObjectIdentification()
     .AddAuthorization()
     .AddTypes()
+    // .AddType<ServiceCategoryEntityFilterInput>()
     .BindRuntimeType<ObjectId, IdType>()
     .AddTypeConverter<ObjectId, string>(o => o.ToString())
     .AddTypeConverter<string, ObjectId>(o => ObjectId.Parse(o))
     .AddType<UploadType>()
     .AddType<OperationResult>()
     .AddMongoDbSorting()
-    .AddMongoDbProjections()
     .AddMongoDbPagingProviders()
-    .AddMongoDbFiltering()
-    .AddFiltering()
-    .AddSorting();
+    .AddMongoDbFiltering();
 
 var app = builder.Build();
 

@@ -15,9 +15,8 @@ public static class Query
     
     [Authorize]
     [UsePaging(MaxPageSize = 100)]
-    [UseProjection]
-    [HotChocolate.Types.UseSorting]
-    [HotChocolate.Types.UseFiltering]
+    [UseSorting]
+    // [UseFiltering]
     public static IExecutable<ServiceCategoryEntity> GetServiceCategories(
         [Service] IMongoCollection<ServiceCategoryEntity> collection,
         [Service] UserContext userContext,
