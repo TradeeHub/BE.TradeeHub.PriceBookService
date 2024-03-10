@@ -3,6 +3,7 @@ using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using BE.TradeeHub.PriceBookService.Domain.Requests;
+using BE.TradeeHub.PriceBookService.Domain.Requests.Update;
 using BE.TradeeHub.PriceBookService.Domain.Responses;
 using MongoDB.Bson;
 
@@ -40,7 +41,7 @@ public class PriceBookService : IPriceBookService
 
         return await _priceBookRepository.CreateServiceCategoryAsync(newServiceCategory, ctx);
     }
-
+    
     public async Task<OperationResult> DeleteServiceCategoryAsync(IUserContext userContext, ObjectId Id, CancellationToken ctx)
     {
         var (operationResult, deletedServiceCategory)=  await _priceBookRepository.DeleteServiceCategoryAsync(userContext, Id, ctx);
@@ -52,6 +53,30 @@ public class PriceBookService : IPriceBookService
             return operationResult;
         
         await _imageRepository.DeleteImagesAsync(keys, ctx, operationResult);
+        
+        return operationResult;
+    }
+    
+    public async Task<OperationResult<ServiceCategoryEntity?>> UpdateServiceCategoryAsync(IUserContext userContext,
+        UpdateServiceCategoryRequest request, CancellationToken ctx)
+    {
+        var operationResult = new OperationResult<ServiceCategoryEntity?>();
+        
+        ImageEntity? newImageEntity = null;
+
+        if (request.S3KeyToDelete != null)
+        {
+            await _imageRepository.DeleteImagesAsync([request.S3KeyToDelete], ctx, operationResult);
+        }
+
+        if (request.NewImage != null)
+        {
+            newImageEntity = await _imageRepository.UploadImageAsync(request.NewImage, userContext.UserId, "service-category", ctx);
+        }
+
+        var updateServiceCategory = await _priceBookRepository.UpdateServiceCategoryAsync(userContext, request, operationResult, ctx, newImageEntity);
+
+        operationResult.AddData(updateServiceCategory);
         
         return operationResult;
     }

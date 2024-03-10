@@ -101,11 +101,21 @@ type Mutation {
   addMaterial(request: AddMaterialRequestInput!): MaterialEntity!
   addTaxRate(request: AddTaxRateRequestInput!): TaxRateEntity!
   addWarranty(request: AddWarrantyRequestInput!): WarrantyEntity!
+  updateServiceCategory(request: UpdateServiceCategoryRequestInput!): OperationResultOfServiceCategoryEntity! @authorize
 }
 
 type OperationResult implements IOperationResult {
   addMessage(error: String!): OperationResult!
   addError(error: String!): OperationResult!
+  success: Boolean!
+  messages: [String!]
+  errors: [String!]
+}
+
+type OperationResultOfServiceCategoryEntity implements IOperationResult {
+  addMessage(error: String!): OperationResult!
+  addError(error: String!): OperationResult!
+  data: ServiceCategoryEntity
   success: Boolean!
   messages: [String!]
   errors: [String!]
@@ -437,6 +447,15 @@ input ServiceMaterialRequestInput {
   quantity: Decimal
   ratio: Decimal
   ranges: [RangeTierUnitRequestInput!]
+}
+
+input UpdateServiceCategoryRequestInput {
+  id: ID!
+  parentServiceCategoryId: ID
+  name: String
+  description: String
+  s3KeyToDelete: String
+  newImage: Upload
 }
 
 input WarrantyDurationRequestInput {

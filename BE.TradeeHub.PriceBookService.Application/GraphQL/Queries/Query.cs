@@ -12,7 +12,6 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Queries;
 [QueryType]
 public static class Query
 {
-    
     [Authorize]
     [UseProjection]
     public static async Task<IList<ServiceCategoryEntity>> GetServiceCategories(

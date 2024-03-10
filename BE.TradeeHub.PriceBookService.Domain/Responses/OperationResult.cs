@@ -63,15 +63,33 @@ public class OperationResult : IOperationResult
 
 public class OperationResult<T> : OperationResult
 {
-    public T? Data { get; private set; }
+    public T? Data { get; private set; } // Encapsulation: Data should be privately settable.
 
-    private OperationResult() { } // Private constructor to ensure factory methods are used
+    public OperationResult() : base() { } // Keep the default constructor private.
 
+    // Adjusting the constructor for setting data and message.
+    public OperationResult(T data, string message = "") : base()
+    {
+        Data = data;
+        if (!string.IsNullOrEmpty(message))
+        {
+            AddMessage(message); // Utilize the AddMessage method from the base class.
+        }
+    }
+    
+    public void AddData(T data)
+    {
+        Data = data;
+    }
+
+    // Adjusting the factory method for creating a success result.
     public static OperationResult<T> SuccessResult(T? data = default, string message = "")
     {
-        return new OperationResult<T>
+        var result = new OperationResult<T>(data);
+        if (!string.IsNullOrEmpty(message))
         {
-            Data = data
-        };
+            result.AddMessage(message);
+        }
+        return result;
     }
 }

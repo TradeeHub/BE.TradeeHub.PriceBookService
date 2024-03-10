@@ -1,6 +1,7 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Entities;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Repositories;
+using BE.TradeeHub.PriceBookService.Domain.Requests.Update;
 using BE.TradeeHub.PriceBookService.Domain.Responses;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -25,6 +26,79 @@ public class PriceBookRepository(IMongoDbContext dbContext) : IPriceBookReposito
         );
 
         return serviceCategory;
+    }
+
+    public async Task<ServiceCategoryEntity?> UpdateServiceCategoryAsync(IUserContext userContext,
+        UpdateServiceCategoryRequest request, OperationResult operationResult, CancellationToken ctx,
+        ImageEntity? newImage = null)
+    {
+        using var session = await dbContext.Client.StartSessionAsync(cancellationToken: ctx);
+        session.StartTransaction();
+        try
+        {
+            var updates = new List<UpdateDefinition<ServiceCategoryEntity>>();
+            var updateBuilder = Builders<ServiceCategoryEntity>.Update;
+
+            // Explicitly checking conditions and building update definitions
+            if (!string.IsNullOrEmpty(request.Name))
+            {
+                updates.Add(updateBuilder.Set(e => e.Name, request.Name));
+            }
+
+            if (request.Description != null)
+            {
+                updates.Add(updateBuilder.Set(e => e.Description, request.Description));
+            }
+
+            if (request.ParentServiceCategoryId.HasValue)
+            {
+                updates.Add(updateBuilder.Set(e => e.ParentServiceCategoryId, request.ParentServiceCategoryId));
+            }
+
+            updates.Add(updateBuilder.Set(e => e.ModifiedById, userContext.UserId));
+            
+            updates.Add(updateBuilder.Set(e => e.ModifiedAt, DateTime.UtcNow));
+
+            // Perform updates to non-array fields
+            if (updates.Count > 0)
+            {
+                var combinedFieldUpdates = updateBuilder.Combine(updates);
+                await dbContext.ServiceCategories.UpdateOneAsync(session, e => e.Id == request.Id, combinedFieldUpdates, new UpdateOptions { IsUpsert = false }, ctx);
+            }
+
+            // Handling images separately
+            if (!string.IsNullOrEmpty(request.S3KeyToDelete))
+            {
+                var pullUpdate = updateBuilder.PullFilter(e => e.Images, img => img.S3Key == request.S3KeyToDelete);
+                await dbContext.ServiceCategories.UpdateOneAsync(session, e => e.Id == request.Id, pullUpdate, new UpdateOptions { IsUpsert = false }, ctx);
+            }
+
+            if (newImage != null)
+            {
+                var pushUpdate = updateBuilder.Push(e => e.Images, newImage);
+                await dbContext.ServiceCategories.UpdateOneAsync(session, e => e.Id == request.Id, pushUpdate, new UpdateOptions { IsUpsert = false }, ctx);
+            }
+            
+            await session.CommitTransactionAsync(ctx);
+
+            // Retrieve and return the updated entity
+            var updatedEntity = await dbContext.ServiceCategories.Find(session, e => e.Id == request.Id)
+                .FirstOrDefaultAsync(ctx);
+            if (updatedEntity != null)
+            {
+                operationResult.AddMessage("Service category updated successfully");
+                return updatedEntity;
+            }
+
+            operationResult.AddError("Failed to update service category");
+            return null;
+        }
+        catch (Exception e)
+        {
+            await session.AbortTransactionAsync(ctx);
+            operationResult.AddError(e.Message);
+            return null;
+        }
     }
 
     public async Task<(OperationResult, ServiceCategoryEntity?)> DeleteServiceCategoryAsync(IUserContext userContext,
@@ -184,7 +258,7 @@ public class PriceBookRepository(IMongoDbContext dbContext) : IPriceBookReposito
             await UpdateAndLogAsync(collection, filter, update, entityMessage, serviceCategoryName, operationResult,
                 ctx);
         }
-        
+
         // Check if the type T has a list field named 'ServiceCategoryIds' for array element removal
         if (typeof(T).GetProperty("ServiceCategoryIds") != null)
         {
@@ -202,9 +276,12 @@ public class PriceBookRepository(IMongoDbContext dbContext) : IPriceBookReposito
         var result = await collection.UpdateManyAsync(filter, update, cancellationToken: ctx);
         if (result.IsAcknowledged)
         {
-            var message =
-                $"{result.ModifiedCount} {entityMessage} unlinked from service category {serviceCategoryName}.";
-            operationResult?.AddMessage(message);
+            if (result.ModifiedCount > 0)
+            {
+                var message =
+                    $"{result.ModifiedCount} {entityMessage} unlinked from service category {serviceCategoryName}.";
+                operationResult?.AddMessage(message);
+            }
         }
         else
         {

@@ -1,5 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -12,6 +13,7 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
 {
     [BsonId] public ObjectId Id { get; set; }
 
+    [ID]
     public ObjectId? ParentServiceCategoryId { get; set; }
 
     /// <summary>
