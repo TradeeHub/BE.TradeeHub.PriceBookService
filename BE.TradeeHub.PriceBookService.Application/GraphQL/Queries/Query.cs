@@ -12,15 +12,39 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Queries;
 [QueryType]
 public static class Query
 {
+    
     [Authorize]
+    [UsePaging(MaxPageSize = 100)]
     [UseProjection]
-    public static async Task<IList<ServiceCategoryEntity>> GetServiceCategories(
-        [Service] IPriceBookService priceBookService, [Service] UserContext userContext, IResolverContext context,
-        CancellationToken ctx)
+    [HotChocolate.Types.UseSorting]
+    [HotChocolate.Types.UseFiltering]
+    public static IExecutable<ServiceCategoryEntity> GetServiceCategories(
+        [Service] IMongoCollection<ServiceCategoryEntity> collection,
+        [Service] UserContext userContext,
+        CancellationToken cancellationToken)
     {
-        var projection = context.Selection.DeclaringSelectionSet.Selections.ToBsonDocumentProjection();
-        return await priceBookService.GetAllServiceCategoriesAsync(userContext, projection, ctx);
+        try
+        {
+            var query = collection.Find(x => x.UserOwnerId == userContext.UserId);
+            var executableQuery = query.AsExecutable();
+
+            return executableQuery;
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error while fetching service categories", e);
+        }
     }
+    
+    // [Authorize]
+    // [UseProjection]
+    // public static async Task<IList<ServiceCategoryEntity>> GetServiceCategories(
+    //     [Service] IPriceBookService priceBookService, [Service] UserContext userContext, IResolverContext context,
+    //     CancellationToken ctx)
+    // {
+    //     var projection = context.Selection.DeclaringSelectionSet.Selections.ToBsonDocumentProjection();
+    //     return await priceBookService.GetAllServiceCategoriesAsync(userContext, projection, ctx);
+    // }
 
     [NodeResolver]
     public static async Task<ServiceEntity?> GetService([Service] IMongoCollection<ServiceEntity?> collection,

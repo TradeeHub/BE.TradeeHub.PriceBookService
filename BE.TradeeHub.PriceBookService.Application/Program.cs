@@ -42,7 +42,9 @@ builder.Services
     .AddMongoDbSorting()
     .AddMongoDbProjections()
     .AddMongoDbPagingProviders()
-    .AddMongoDbFiltering();
+    .AddMongoDbFiltering()
+    .AddFiltering()
+    .AddSorting();
 
 var app = builder.Build();
 
