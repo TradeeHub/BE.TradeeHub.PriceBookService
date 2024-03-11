@@ -144,7 +144,7 @@ type Query {
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
-  serviceCategories("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [ServiceCategoryEntitySortInput!]): ServiceCategoriesConnection @authorize
+  serviceCategories("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [ServiceCategoryEntitySortInput!] where: ServiceCategoryEntityFilterInput): ServiceCategoriesConnection @authorize
   service(id: ID!): ServiceEntity
   serviceCategory(id: ID!): ServiceCategoryEntity
   laborRate(id: ID!): LaborRateEntity
@@ -425,6 +425,72 @@ input AdditionalServiceCostRequestInput {
   taxRateId: ID
 }
 
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input IdOperationFilterInput {
+  eq: ID
+  neq: ID
+  in: [ID]
+  nin: [ID]
+}
+
+input ImageEntityFilterInput {
+  and: [ImageEntityFilterInput!]
+  or: [ImageEntityFilterInput!]
+  url: StringOperationFilterInput
+  s3Key: StringOperationFilterInput
+  name: StringOperationFilterInput
+  byteSize: LongOperationFilterInput
+  contentType: StringOperationFilterInput
+  description: StringOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  createdById: UuidOperationFilterInput
+  modifiedAt: DateTimeOperationFilterInput
+  modifiedById: UuidOperationFilterInput
+}
+
+input ListFilterInputTypeOfImageEntityFilterInput {
+  all: ImageEntityFilterInput
+  none: ImageEntityFilterInput
+  some: ImageEntityFilterInput
+  any: Boolean
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+input LongOperationFilterInput {
+  eq: Long
+  neq: Long
+  in: [Long]
+  nin: [Long]
+  gt: Long
+  ngt: Long
+  gte: Long
+  ngte: Long
+  lt: Long
+  nlt: Long
+  lte: Long
+  nlte: Long
+}
+
 input MarkupEntityInput {
   type: MarkupType!
   value: Decimal!
@@ -455,6 +521,23 @@ input RangeOfDecimalInput {
 input RangeTierUnitRequestInput {
   quantity: Decimal!
   range: RangeOfDecimalInput!
+}
+
+input ServiceCategoryEntityFilterInput {
+  and: [ServiceCategoryEntityFilterInput!]
+  or: [ServiceCategoryEntityFilterInput!]
+  id: StringOperationFilterInput
+  parentServiceCategoryId: IdOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  images: ListFilterInputTypeOfImageEntityFilterInput
+  serviceCategoryIds: ListStringOperationFilterInput
+  serviceIds: ListStringOperationFilterInput
+  userOwnerId: UuidOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  createdById: UuidOperationFilterInput
+  modifiedAt: DateTimeOperationFilterInput
+  modifiedById: UuidOperationFilterInput
 }
 
 input ServiceCategoryEntitySortInput {
@@ -491,6 +574,21 @@ input ServiceMaterialRequestInput {
   ranges: [RangeTierUnitRequestInput!]
 }
 
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
 input UpdateServiceCategoryRequestInput {
   id: ID!
   parentServiceCategoryId: ID
@@ -498,6 +596,21 @@ input UpdateServiceCategoryRequestInput {
   description: String
   s3KeyToDelete: String
   newImage: Upload
+}
+
+input UuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
 }
 
 input WarrantyDurationRequestInput {

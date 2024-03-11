@@ -9,6 +9,7 @@ using BE.TradeeHub.PriceBookService.Domain.Responses;
 using BE.TradeeHub.PriceBookService.Infrastructure;
 using BE.TradeeHub.PriceBookService.Infrastructure.Extensions;
 using BE.TradeeHub.PriceBookService.Infrastructure.Repositories;
+using HotChocolate.Data.Filters;
 using MongoDB.Bson;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,15 +36,15 @@ builder.Services
     .AddGlobalObjectIdentification()
     .AddAuthorization()
     .AddTypes()
-    // .AddType<ServiceCategoryEntityFilterInput>()
     .BindRuntimeType<ObjectId, IdType>()
-    .AddTypeConverter<ObjectId, string>(o => o.ToString())
-    .AddTypeConverter<string, ObjectId>(o => ObjectId.Parse(o))
+    .AddTypeConverter<ObjectId, string>(x => x.ToString())
+    .AddTypeConverter<string, ObjectId>(x => new ObjectId(x))
     .AddType<UploadType>()
     .AddType<OperationResult>()
     .AddMongoDbSorting()
     .AddMongoDbPagingProviders()
-    .AddMongoDbFiltering();
+    .AddMongoDbFiltering()
+    .AddConvention<IFilterConvention, CustomFilterConventionExtension>();
 
 var app = builder.Build();
 

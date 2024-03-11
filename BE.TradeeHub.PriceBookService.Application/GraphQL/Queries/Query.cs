@@ -1,9 +1,7 @@
 ﻿using BE.TradeeHub.PriceBookService.Application.Extensions;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
-using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using HotChocolate.Authorization;
 using HotChocolate.Data;
-using HotChocolate.Resolvers;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -12,11 +10,10 @@ namespace BE.TradeeHub.PriceBookService.Application.GraphQL.Queries;
 [QueryType]
 public static class Query
 {
-    
     [Authorize]
     [UsePaging(MaxPageSize = 100)]
     [UseSorting]
-    // [UseFiltering]
+    [UseFiltering]
     public static IExecutable<ServiceCategoryEntity> GetServiceCategories(
         [Service] IMongoCollection<ServiceCategoryEntity> collection,
         [Service] UserContext userContext,
