@@ -40,7 +40,7 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
     /// Services that are part of this service category
     /// </summary>
     public List<ObjectId> ServiceIds { get; set; } = [];
-
+    
     public ServiceCategoryEntity()
     {
     }
@@ -54,5 +54,6 @@ public class ServiceCategoryEntity : AuditableEntity, IOwnedEntity
         ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
         Images = new List<ImageEntity>();
         CreatedAt = DateTime.UtcNow;
+        ModifiedAt = DateTime.UtcNow;
     }
 }

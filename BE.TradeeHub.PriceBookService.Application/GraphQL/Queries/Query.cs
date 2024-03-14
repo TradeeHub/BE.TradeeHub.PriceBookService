@@ -1,7 +1,10 @@
-﻿using BE.TradeeHub.PriceBookService.Application.Extensions;
+﻿using System.Text.RegularExpressions;
+using BE.TradeeHub.PriceBookService.Application.Extensions;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
+using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using HotChocolate.Authorization;
 using HotChocolate.Data;
+using HotChocolate.Resolvers;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -17,31 +20,27 @@ public static class Query
     public static IExecutable<ServiceCategoryEntity> GetServiceCategories(
         [Service] IMongoCollection<ServiceCategoryEntity> collection,
         [Service] UserContext userContext,
-        CancellationToken cancellationToken)
+        string? name)
     {
-        try
+        var filters = new List<FilterDefinition<ServiceCategoryEntity>>
         {
-            var query = collection.Find(x => x.UserOwnerId == userContext.UserId);
-            var executableQuery = query.AsExecutable();
+            Builders<ServiceCategoryEntity>.Filter.Eq(x => x.UserOwnerId, userContext.UserId)
+        };
 
-            return executableQuery;
-        }
-        catch (Exception e)
+        if (!string.IsNullOrWhiteSpace(name))
         {
-            throw new Exception("Error while fetching service categories", e);
+            var nameFilter = Builders<ServiceCategoryEntity>.Filter.Regex(x => x.Name, new BsonRegularExpression($"{Regex.Escape(name)}", "i"));
+            filters.Add(nameFilter);
         }
+
+        var combinedFilter = Builders<ServiceCategoryEntity>.Filter.And(filters);
+        
+        var query = collection.Find(combinedFilter);
+        var executableQuery = query.AsExecutable();
+    
+        return executableQuery;
     }
     
-    // [Authorize]
-    // [UseProjection]
-    // public static async Task<IList<ServiceCategoryEntity>> GetServiceCategories(
-    //     [Service] IPriceBookService priceBookService, [Service] UserContext userContext, IResolverContext context,
-    //     CancellationToken ctx)
-    // {
-    //     var projection = context.Selection.DeclaringSelectionSet.Selections.ToBsonDocumentProjection();
-    //     return await priceBookService.GetAllServiceCategoriesAsync(userContext, projection, ctx);
-    // }
-
     [NodeResolver]
     public static async Task<ServiceEntity?> GetService([Service] IMongoCollection<ServiceEntity?> collection,
         [Service] UserContext userContext, ObjectId id, CancellationToken ctx)
@@ -92,4 +91,8 @@ public static class Query
     {
         return await EntityFetcher.GetEntityByIdAndOwnerId(collection, id, userContext.UserId, ctx);
     }
+}
+
+public class Sort
+{
 }

@@ -195,46 +195,7 @@ public class PriceBookRepository(IMongoDbContext dbContext) : IPriceBookReposito
             .Project<ServiceCategoryEntity>(projection)
             .ToListAsync(ctx);
     }
-
-    private async Task UnlinkLaborRatesFromServiceCategoryAsync(ObjectId parentServiceCategoryId,
-        string serviceCategoryName, CancellationToken ctx, OperationResult? operationResult = null)
-    {
-        var filter = Builders<LaborRateEntity>.Filter.Eq(lr => lr.ParentServiceCategoryId, parentServiceCategoryId);
-        var update = Builders<LaborRateEntity>.Update.Set(lr => lr.ParentServiceCategoryId, null);
-        var result = await dbContext.LabourRates.UpdateManyAsync(filter, update, cancellationToken: ctx);
-
-        if (result.IsAcknowledged && result.ModifiedCount > 0)
-        {
-            operationResult?.AddMessage(
-                $"{result.ModifiedCount} labor rates unlinked from service category {serviceCategoryName}.");
-        }
-
-        {
-            operationResult?.AddMessage(
-                $"{result.ModifiedCount} labor rates unlinked from service category {serviceCategoryName}.");
-        }
-    }
-
-    private async Task UnlinkServiceCategoriesFromServiceCategoryAsync(ObjectId parentServiceCategoryId,
-        string serviceCategoryName, CancellationToken ctx, OperationResult? operationResult = null)
-    {
-        var filter =
-            Builders<ServiceCategoryEntity>.Filter.Eq(lr => lr.ParentServiceCategoryId, parentServiceCategoryId);
-        var update = Builders<ServiceCategoryEntity>.Update.Set(lr => lr.ParentServiceCategoryId, null);
-        var result = await dbContext.ServiceCategories.UpdateManyAsync(filter, update, cancellationToken: ctx);
-
-        if (result.IsAcknowledged && result.ModifiedCount > 0)
-        {
-            operationResult?.AddMessage(
-                $"{result.ModifiedCount} service categories unlinked from service category {serviceCategoryName}.");
-        }
-
-        {
-            operationResult?.AddMessage(
-                $"{result.ModifiedCount} service categories unlinked from service category {serviceCategoryName}.");
-        }
-    }
-
+    
     private async Task UnlinkEntitiesFromServiceCategoryAsync<T>(ObjectId parentServiceCategoryId,
         string serviceCategoryName, string entityMessage, CancellationToken ctx,
         OperationResult? operationResult = null) where T : class
