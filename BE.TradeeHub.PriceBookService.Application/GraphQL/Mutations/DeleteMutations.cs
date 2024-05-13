@@ -14,5 +14,12 @@ public class DeleteMutations
     {
         return await priceBookService.DeleteServiceCategoryAsync(userContext, id, ctx);
     }
+    
+    [NodeResolver]
+    [Authorize]
+    public async Task<IOperationResult> DeleteMaterialAsync([Service] IPriceBookService priceBookService, [Service] UserContext userContext,[ID] ObjectId id, CancellationToken ctx)
+    {
+        return await priceBookService.DeleteMaterialAsync(userContext, id, ctx);
+    }
 }
 

@@ -1,5 +1,6 @@
 ﻿using BE.TradeeHub.PriceBookService.Domain.Interfaces;
 using BE.TradeeHub.PriceBookService.Domain.Interfaces.Requests;
+using HotChocolate.Types.Relay;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -15,6 +16,7 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     /// <summary>
     /// This enforces only certain cervices to show this option if null it's a global option
     /// </summary>
+    [ID]
     public ObjectId? ParentServiceCategoryId { get; set; }
 
     /// <summary>
@@ -31,12 +33,7 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     /// Unique identifier for the material that can be used to identify the material in third party
     /// </summary>
     public string? Identifier { get; set; }
-
-    /// <summary>
-    /// If markup is not null then the price will be calculated based on the markup
-    /// </summary>
-    public MarkupEntity? Markup { get; set; }
-
+    
     /// <summary>
     /// If true it means it will use PricingTiers
     /// </summary>
@@ -78,9 +75,9 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
     public List<ImageEntity>? Images { get; set; }
 
     /// <summary>
-    /// Links to the online material store where the material can be purchased
+    /// Vendor where you got the material
     /// </summary>
-    public List<string>? OnlineMaterialUrls { get; set; }
+    public string? Vendor { get; set; }
 
     /// <summary>
     /// Price tiers for the material based on the quantity of the material example 1-10, 11-20, 21-30 each tier will have a different price
@@ -97,7 +94,6 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
         ParentServiceCategoryId = addRequest.ParentServiceCategoryId;
         Description = addRequest.Description?.Trim();
         Identifier = addRequest.Identifier?.Trim();
-        Markup = addRequest.Markup;
         Taxable = addRequest.Taxable;
         AllowOnlineBooking = addRequest.AllowOnlineBooking;
         OnlinePrice = addRequest is { UsePriceRange: false, AllowOnlineBooking: true } ? addRequest.OnlinePrice : null;
@@ -106,10 +102,11 @@ public class MaterialEntity : AuditableEntity, IOwnedEntity
         Price = !addRequest.UsePriceRange ? addRequest.Price : null;
         UnitType = addRequest.UnitType.Trim();
         Images = new List<ImageEntity>();
-        OnlineMaterialUrls = addRequest.OnlineMaterialUrls?.ToList();
+        Vendor = addRequest.Vendor?.Trim();
         PricingTiers = addRequest.UsePriceRange ? addRequest.PricingTiers?.ToList() : null;
         UserOwnerId = userContext.UserId;
         CreatedById = userContext.UserId;
         CreatedAt = DateTime.UtcNow;
+        ModifiedAt = DateTime.UtcNow;
     }
 }

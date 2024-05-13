@@ -9,11 +9,9 @@ namespace BE.TradeeHub.PriceBookService.Domain.Requests;
 public class AddMaterialRequest : IAddMaterialRequest
 {
     public required string Name { get; set; }
-    [ID]
-    public ObjectId? ParentServiceCategoryId { get; set; }
+    [ID] public ObjectId? ParentServiceCategoryId { get; set; }
     public string? Description { get; set; }
     public string? Identifier { get; set; }
-    public MarkupEntity? Markup { get; set; }
     public bool UsePriceRange { get; set; }
     public bool Taxable { get; set; }
     public bool AllowOnlineBooking { get; set; }
@@ -22,6 +20,6 @@ public class AddMaterialRequest : IAddMaterialRequest
     public decimal? Price { get; set; }
     public required string UnitType { get; set; }
     public IEnumerable<IFile>? Images { get; set; }
-    public IEnumerable<string>? OnlineMaterialUrls { get; set; }
+    public string? Vendor { get; set; }
     public IEnumerable<PricingTierEntity>? PricingTiers { get; set; }
 }

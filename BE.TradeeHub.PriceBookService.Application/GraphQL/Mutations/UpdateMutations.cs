@@ -15,4 +15,11 @@ public class UpdateMutations
     {
         return await priceBookService.UpdateServiceCategoryAsync(userContext, request, ctx);
     }
+    
+    [Authorize]
+    public async Task<OperationResult<MaterialEntity?>> UpdateMaterialAsync([Service] IPriceBookService priceBookService,
+        [Service] UserContext userContext, UpdateMaterialRequest request, CancellationToken ctx)
+    {
+        return await priceBookService.UpdateMaterialAsync(userContext, request, ctx);
+    }
 }

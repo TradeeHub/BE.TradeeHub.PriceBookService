@@ -13,11 +13,13 @@ public class PriceBookService : IPriceBookService
 {
     private readonly IPriceBookRepository _priceBookRepository;
     private readonly IImageRepository _imageRepository;
-
-    public PriceBookService(IImageRepository imageRepository, IPriceBookRepository priceBookRepository)
+    private readonly IMaterialRepository _materialRepository;
+    
+    public PriceBookService(IImageRepository imageRepository, IPriceBookRepository priceBookRepository, IMaterialRepository materialRepository)
     {
         _imageRepository = imageRepository;
         _priceBookRepository = priceBookRepository;
+        _materialRepository = materialRepository;
     }
 
     public async Task<ServiceCategoryEntity>
@@ -42,12 +44,27 @@ public class PriceBookService : IPriceBookService
         return await _priceBookRepository.CreateServiceCategoryAsync(newServiceCategory, ctx);
     }
     
-    public async Task<OperationResult> DeleteServiceCategoryAsync(IUserContext userContext, ObjectId Id, CancellationToken ctx)
+    public async Task<OperationResult> DeleteServiceCategoryAsync(IUserContext userContext, ObjectId id, CancellationToken ctx)
     {
-        var (operationResult, deletedServiceCategory)=  await _priceBookRepository.DeleteServiceCategoryAsync(userContext, Id, ctx);
+        var (operationResult, deletedServiceCategory)=  await _priceBookRepository.DeleteServiceCategoryAsync(userContext, id, ctx);
         if (deletedServiceCategory == null) return operationResult;
         
         var keys = deletedServiceCategory.Images?.Select(i => i.S3Key).ToList();
+        
+        if(keys == null || keys.Count == 0)
+            return operationResult;
+        
+        await _imageRepository.DeleteImagesAsync(keys, ctx, operationResult);
+        
+        return operationResult;
+    }
+    
+    public async Task<OperationResult> DeleteMaterialAsync(IUserContext userContext, ObjectId id, CancellationToken ctx)
+    {
+        var (operationResult, deletedMaterial)=  await _materialRepository.DeleteMaterialAsync(id, ctx);
+        if (deletedMaterial == null) return operationResult;
+        
+        var keys = deletedMaterial.Images?.Select(i => i.S3Key).ToList();
         
         if(keys == null || keys.Count == 0)
             return operationResult;
@@ -71,7 +88,7 @@ public class PriceBookService : IPriceBookService
 
         if (request.NewImage != null)
         {
-            newImageEntity = await _imageRepository.UploadImageAsync(request.NewImage, userContext.UserId, "service-category", ctx);
+            newImageEntity = await _imageRepository.UploadImageAsync(request.NewImage, userContext.UserId, "materials", ctx);
         }
 
         var updateServiceCategory = await _priceBookRepository.UpdateServiceCategoryAsync(userContext, request, operationResult, ctx, newImageEntity);
@@ -80,6 +97,32 @@ public class PriceBookService : IPriceBookService
         
         return operationResult;
     }
+
+
+    public async Task<OperationResult<MaterialEntity?>> UpdateMaterialAsync(IUserContext userContext,
+        UpdateMaterialRequest request, CancellationToken ctx)
+    {
+        var operationResult = new OperationResult<MaterialEntity?>();
+        
+        ImageEntity? newImageEntity = null;
+
+        if (request.S3KeyToDelete != null)
+        {
+            await _imageRepository.DeleteImagesAsync([request.S3KeyToDelete], ctx, operationResult);
+        }
+
+        if (request.NewImage != null)
+        {
+            newImageEntity = await _imageRepository.UploadImageAsync(request.NewImage, userContext.UserId, "service-category", ctx);
+        }
+
+        var updateServiceCategory = await _materialRepository.UpdateMaterialAsync(userContext, request, operationResult, ctx, newImageEntity);
+
+        operationResult.AddData(updateServiceCategory);
+        
+        return operationResult;
+    }
+
 
     public async Task<LaborRateEntity> AddLaborRateAsync(IUserContext userContext, AddLaborRateRequest request,
         CancellationToken ctx)
@@ -124,7 +167,7 @@ public class PriceBookService : IPriceBookService
         var materialEntity = new MaterialEntity(request, userContext);
 
         if (request.Images == null || !request.Images.Any())
-            return await _priceBookRepository.CreateMaterialAsync(materialEntity, ctx);
+            return await _materialRepository.CreateMaterialAsync(materialEntity, ctx);
 
         var uploadTasks = request.Images
             .Select(image => _imageRepository.UploadImageAsync(image, userContext.UserId, "materials", ctx))
@@ -136,7 +179,7 @@ public class PriceBookService : IPriceBookService
             materialEntity.Images?.Add(image);
         }
 
-        return await _priceBookRepository.CreateMaterialAsync(materialEntity, ctx);
+        return await _materialRepository.CreateMaterialAsync(materialEntity, ctx);
     }
 
     public async Task<TaxRateEntity> AddTaxRateAsync(IUserContext userContext, AddTaxRateRequest request,

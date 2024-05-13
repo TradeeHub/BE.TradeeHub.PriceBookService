@@ -143,7 +143,7 @@ public class PriceBookRepository(IMongoDbContext dbContext) : IPriceBookReposito
             _ => (operationResult.AddError("Failed to delete the service category."), serviceCategory)
         };
     }
-
+    
     public async Task<LaborRateEntity> CreateLabourRateAsync(LaborRateEntity laborRate,
         CancellationToken cancellationToken)
     {
@@ -162,12 +162,6 @@ public class PriceBookRepository(IMongoDbContext dbContext) : IPriceBookReposito
     {
         await dbContext.ServiceBundles.InsertOneAsync(serviceBundle, cancellationToken: cancellationToken);
         return serviceBundle;
-    }
-
-    public async Task<MaterialEntity> CreateMaterialAsync(MaterialEntity material, CancellationToken cancellationToken)
-    {
-        await dbContext.Materials.InsertOneAsync(material, cancellationToken: cancellationToken);
-        return material;
     }
 
     public async Task<TaxRateEntity> CreateTaxRateAsync(TaxRateEntity taxRate, CancellationToken cancellationToken)

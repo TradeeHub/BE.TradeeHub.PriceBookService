@@ -73,7 +73,6 @@ type MaterialEntity implements Node {
   name: String!
   description: String
   identifier: String
-  markup: MarkupEntity
   usePriceRange: Boolean!
   taxable: Boolean!
   allowOnlineBooking: Boolean!
@@ -82,7 +81,7 @@ type MaterialEntity implements Node {
   price: Decimal
   unitType: String!
   images: [ImageEntity!]
-  onlineMaterialUrls: [String!]
+  vendor: String
   pricingTiers: [PricingTierEntity!]
   userOwnerId: UUID!
   createdAt: DateTime!
@@ -92,8 +91,27 @@ type MaterialEntity implements Node {
   serviceCategory: ServiceCategoryEntity
 }
 
+"A connection to a list of items."
+type MaterialsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [MaterialsEdge!]
+  "A flattened list of the nodes."
+  nodes: [MaterialEntity!]
+}
+
+"An edge in a connection."
+type MaterialsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: MaterialEntity!
+}
+
 type Mutation {
   deleteServiceCategory(id: ID!): IOperationResult! @authorize
+  deleteMaterial(id: ID!): IOperationResult! @authorize
   addNewServiceCategory(request: AddNewServiceCategoryRequestInput!): ServiceCategoryEntity! @authorize
   addLaborRate(request: AddLaborRateRequestInput!): LaborRateEntity!
   addService(request: AddServiceRequestInput!): ServiceEntity!
@@ -102,11 +120,21 @@ type Mutation {
   addTaxRate(request: AddTaxRateRequestInput!): TaxRateEntity!
   addWarranty(request: AddWarrantyRequestInput!): WarrantyEntity!
   updateServiceCategory(request: UpdateServiceCategoryRequestInput!): OperationResultOfServiceCategoryEntity! @authorize
+  updateMaterial(request: UpdateMaterialRequestInput!): OperationResultOfMaterialEntity! @authorize
 }
 
 type OperationResult implements IOperationResult {
   addMessage(error: String!): OperationResult!
   addError(error: String!): OperationResult!
+  success: Boolean!
+  messages: [String!]
+  errors: [String!]
+}
+
+type OperationResultOfMaterialEntity implements IOperationResult {
+  addMessage(error: String!): OperationResult!
+  addError(error: String!): OperationResult!
+  data: MaterialEntity
   success: Boolean!
   messages: [String!]
   errors: [String!]
@@ -144,6 +172,7 @@ type Query {
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
+  materials(request: SearchMaterialRequestInput! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [MaterialEntitySortInput!] where: MaterialEntityFilterInput): MaterialsConnection @authorize
   serviceCategories(name: String "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [ServiceCategoryEntitySortInput!] where: ServiceCategoryEntityFilterInput): ServiceCategoriesConnection @authorize
   service(id: ID!): ServiceEntity
   serviceCategory(id: ID!): ServiceCategoryEntity
@@ -338,7 +367,6 @@ input AddMaterialRequestInput {
   parentServiceCategoryId: ID
   description: String
   identifier: String
-  markup: MarkupEntityInput
   usePriceRange: Boolean!
   taxable: Boolean!
   allowOnlineBooking: Boolean!
@@ -347,7 +375,7 @@ input AddMaterialRequestInput {
   price: Decimal
   unitType: String!
   images: [Upload!]
-  onlineMaterialUrls: [String!]
+  vendor: String
   pricingTiers: [PricingTierEntityInput!]
 }
 
@@ -425,6 +453,11 @@ input AdditionalServiceCostRequestInput {
   taxRateId: ID
 }
 
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
 input DateTimeOperationFilterInput {
   eq: DateTime
   neq: DateTime
@@ -438,6 +471,21 @@ input DateTimeOperationFilterInput {
   nlt: DateTime
   lte: DateTime
   nlte: DateTime
+}
+
+input DecimalOperationFilterInput {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
 }
 
 input IdOperationFilterInput {
@@ -469,6 +517,13 @@ input ListFilterInputTypeOfImageEntityFilterInput {
   any: Boolean
 }
 
+input ListFilterInputTypeOfPricingTierEntityFilterInput {
+  all: PricingTierEntityFilterInput
+  none: PricingTierEntityFilterInput
+  some: PricingTierEntityFilterInput
+  any: Boolean
+}
+
 input ListStringOperationFilterInput {
   all: StringOperationFilterInput
   none: StringOperationFilterInput
@@ -491,14 +546,63 @@ input LongOperationFilterInput {
   nlte: Long
 }
 
-input MarkupEntityInput {
+input MarkupRequestInput {
   type: MarkupType!
   value: Decimal!
 }
 
-input MarkupRequestInput {
-  type: MarkupType!
-  value: Decimal!
+input MaterialEntityFilterInput {
+  and: [MaterialEntityFilterInput!]
+  or: [MaterialEntityFilterInput!]
+  id: StringOperationFilterInput
+  parentServiceCategoryId: IdOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  identifier: StringOperationFilterInput
+  usePriceRange: BooleanOperationFilterInput
+  taxable: BooleanOperationFilterInput
+  allowOnlineBooking: BooleanOperationFilterInput
+  onlinePrice: DecimalOperationFilterInput
+  cost: DecimalOperationFilterInput
+  price: DecimalOperationFilterInput
+  unitType: StringOperationFilterInput
+  images: ListFilterInputTypeOfImageEntityFilterInput
+  vendor: StringOperationFilterInput
+  pricingTiers: ListFilterInputTypeOfPricingTierEntityFilterInput
+  userOwnerId: UuidOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  createdById: UuidOperationFilterInput
+  modifiedAt: DateTimeOperationFilterInput
+  modifiedById: UuidOperationFilterInput
+}
+
+input MaterialEntitySortInput {
+  id: SortEnumType
+  parentServiceCategoryId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  identifier: SortEnumType
+  usePriceRange: SortEnumType
+  taxable: SortEnumType
+  allowOnlineBooking: SortEnumType
+  onlinePrice: SortEnumType
+  cost: SortEnumType
+  price: SortEnumType
+  unitType: SortEnumType
+  vendor: SortEnumType
+  userOwnerId: SortEnumType
+  createdAt: SortEnumType
+  createdById: SortEnumType
+  modifiedAt: SortEnumType
+  modifiedById: SortEnumType
+}
+
+input PricingTierEntityFilterInput {
+  and: [PricingTierEntityFilterInput!]
+  or: [PricingTierEntityFilterInput!]
+  unitRange: RangeOfDecimalFilterInput
+  cost: DecimalOperationFilterInput
+  price: DecimalOperationFilterInput
 }
 
 input PricingTierEntityInput {
@@ -513,6 +617,13 @@ input PricingTierRequestInput {
   price: Decimal!
 }
 
+input RangeOfDecimalFilterInput {
+  and: [RangeOfDecimalFilterInput!]
+  or: [RangeOfDecimalFilterInput!]
+  max: DecimalOperationFilterInput
+  min: DecimalOperationFilterInput
+}
+
 input RangeOfDecimalInput {
   max: Decimal!
   min: Decimal!
@@ -521,6 +632,18 @@ input RangeOfDecimalInput {
 input RangeTierUnitRequestInput {
   quantity: Decimal!
   range: RangeOfDecimalInput!
+}
+
+input SearchMaterialRequestInput {
+  name: String
+  parentServiceCategoryId: ID
+  identifier: String
+  taxable: Boolean
+  allowOnlineBooking: Boolean
+  onlinePrice: Decimal
+  cost: Decimal
+  price: Decimal
+  unitType: String
 }
 
 input ServiceCategoryEntityFilterInput {
@@ -587,6 +710,25 @@ input StringOperationFilterInput {
   nstartsWith: String
   endsWith: String
   nendsWith: String
+}
+
+input UpdateMaterialRequestInput {
+  id: ID!
+  name: String
+  parentServiceCategoryId: ID
+  description: String
+  identifier: String
+  usePriceRange: Boolean
+  taxable: Boolean
+  allowOnlineBooking: Boolean
+  onlinePrice: Decimal
+  cost: Decimal
+  price: Decimal
+  unitType: String
+  vendor: String
+  pricingTiers: [PricingTierEntityInput!]
+  s3KeyToDelete: String
+  newImage: Upload
 }
 
 input UpdateServiceCategoryRequestInput {

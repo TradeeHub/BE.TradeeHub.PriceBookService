@@ -1,10 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using BE.TradeeHub.PriceBookService.Application.Extensions;
 using BE.TradeeHub.PriceBookService.Domain.Entities;
-using BE.TradeeHub.PriceBookService.Domain.Interfaces.Services;
 using HotChocolate.Authorization;
 using HotChocolate.Data;
-using HotChocolate.Resolvers;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -29,18 +27,19 @@ public static class Query
 
         if (!string.IsNullOrWhiteSpace(name))
         {
-            var nameFilter = Builders<ServiceCategoryEntity>.Filter.Regex(x => x.Name, new BsonRegularExpression($"{Regex.Escape(name)}", "i"));
+            var nameFilter = Builders<ServiceCategoryEntity>.Filter.Regex(x => x.Name,
+                new BsonRegularExpression($"{Regex.Escape(name)}", "i"));
             filters.Add(nameFilter);
         }
 
         var combinedFilter = Builders<ServiceCategoryEntity>.Filter.And(filters);
-        
+
         var query = collection.Find(combinedFilter);
         var executableQuery = query.AsExecutable();
-    
+
         return executableQuery;
     }
-    
+
     [NodeResolver]
     public static async Task<ServiceEntity?> GetService([Service] IMongoCollection<ServiceEntity?> collection,
         [Service] UserContext userContext, ObjectId id, CancellationToken ctx)
@@ -91,8 +90,4 @@ public static class Query
     {
         return await EntityFetcher.GetEntityByIdAndOwnerId(collection, id, userContext.UserId, ctx);
     }
-}
-
-public class Sort
-{
 }

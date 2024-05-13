@@ -10,7 +10,6 @@ public interface IAddMaterialRequest
     public ObjectId? ParentServiceCategoryId { get; }
     public string? Description { get; }
     public string? Identifier { get; }
-    public MarkupEntity? Markup { get; }
     public bool UsePriceRange { get; set; }
     public bool Taxable { get; }
     public bool AllowOnlineBooking { get; }
@@ -19,6 +18,6 @@ public interface IAddMaterialRequest
     public decimal? Price { get; }
     public string UnitType { get; }
     public IEnumerable<IFile>? Images { get; set; }
-    public IEnumerable<string>? OnlineMaterialUrls { get; }
+    public string? Vendor { get; }
     public IEnumerable<PricingTierEntity>? PricingTiers { get; }
 }

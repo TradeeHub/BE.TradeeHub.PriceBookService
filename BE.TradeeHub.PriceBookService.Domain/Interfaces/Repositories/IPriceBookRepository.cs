@@ -13,7 +13,6 @@ public interface IPriceBookRepository
     Task<LaborRateEntity> CreateLabourRateAsync(LaborRateEntity laborRate, CancellationToken ctx);
     Task<ServiceEntity> CreateServiceAsync(ServiceEntity service, CancellationToken ctx);
     Task<ServiceBundleEntity> CreateServiceBundleAsync(ServiceBundleEntity serviceBundle, CancellationToken ctx);
-    Task<MaterialEntity> CreateMaterialAsync(MaterialEntity material, CancellationToken ctx);
     Task<TaxRateEntity> CreateTaxRateAsync(TaxRateEntity taxRate, CancellationToken ctx);
     Task<WarrantyEntity> CreateWarrantyAsync(WarrantyEntity warranty, CancellationToken ctx);
     Task<IList<ServiceCategoryEntity>> GetAllServiceCategoriesAsync(IUserContext userContext, BsonDocument projection, CancellationToken ctx);
